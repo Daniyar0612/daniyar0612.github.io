@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonFocus Schedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #050505;       /* Почти черный */
+            --card-bg: #121212;        /* Темно-серый */
+            --text-main: #e0e0e0;
+            --accent: #00ffd5;         /* Яркий бирюзовый */
+            --accent-dim: rgba(0, 255, 213, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Login Screen --- */
+        #auth-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        input, button, select {
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: var(--card-bg);
+            color: white;
+            outline: none;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        input:focus, select:focus { border-color: var(--accent); }
+
+        button.primary {
+            background-color: var(--accent);
+            color: var(--bg-color);
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        button.primary:hover { opacity: 0.9; transform: scale(1.02); }
+
+        /* --- Main Layout --- */
+        #app-container { display: none; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { font-weight: 300; letter-spacing: 1px; }
+        h1 span { color: var(--accent); font-weight: 600; }
+
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            flex: 1;
+        }
+        .tab-btn.active {
+            background: var(--accent);
+            color: var(--bg-color);
+        }
+
+        /* --- Schedule Section --- */
+        .day-row {
+            background: var(--card-bg);
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 3px solid var(--accent);
+            transition: 0.3s;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        /* Логика "Сегодня": Инверсия цветов */
+        .day-row.active-day {
+            background-color: var(--accent);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px rgba(0, 255, 213, 0.4);
+        }
+        
+        /* В активном дне детали становятся темными */
+        .day-row.active-day .task-item {
+            background-color: rgba(0,0,0, 0.1); 
+            border-left-color: var(--bg-color);
+        }
+
+        .task-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .task-item {
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            border-left: 2px solid #555;
+        }
+        
+        /* Специфичный цвет для уроков (по запросу) */
+        .task-item.type-lesson { border-left-color: var(--accent); }
+
+        /* --- Sleep Graph Section --- */
+        #sleep-section { display: none; }
+        .chart-container {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 1px solid #333;
+        }
+
+        /* --- Floating Action Button (FAB) --- */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px; height: 60px;
+            background: var(--accent);
+            color: var(--bg-color);
+            border-radius: 50%;
+            font-size: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,255,213, 0.5);
+            cursor: pointer;
+            border: none;
+        }
+
+        /* --- Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--accent);
+        }
+        .modal h2 { margin-bottom: 15px; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen">
+        <h1 style="margin-bottom: 20px;">NEON<span>FOCUS</span></h1>
+        <input type="text" id="username" placeholder="Ваше имя">
+        <button class="primary" onclick="login()">Войти</button>
+    </div>
+
+    <div id="app-container">
+        <header>
+            <h1>Привет, <span id="user-display">User</span></h1>
+            <button onclick="logout()" style="background:none; border:none; color: #666; cursor:pointer;">Выйти</button>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('schedule')">Расписание</button>
+            <button class="tab-btn" onclick="switchTab('sleep')">График сна</button>
+        </div>
+
+        <div id="schedule-section">
+            <div id="schedule-list">
+                </div>
+        </div>
+
+        <div id="sleep-section">
+            <div class="chart-container">
+                <canvas id="sleepChart"></canvas>
+            </div>
+            <div style="margin-top: 20px; text-align: center; color: #888;">
+                <small>График показывает время пробуждения за последние дни</small>
+            </div>
+        </div>
+
+        <button class="fab" onclick="openModal()">+</button>
+    </div>
+
+    <div id="add-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title">Добавить</h2>
+            
+            <label style="font-size:12px; color:#888;">Тип записи</label>
+            <select id="entry-type" onchange="toggleFormFields()">
+                <option value="lesson">Урок / Дело</option>
+                <option value="sleep">Запись сна</option>
+            </select>
+
+            <div id="form-schedule">
+                <select id="day-select">
+                    <option value="0">Понедельник</option>
+                    <option value="1">Вторник</option>
+                    <option value="2">Среда</option>
+                    <option value="3">Четверг</option>
+                    <option value="4">Пятница</option>
+                    <option value="5">Суббота</option>
+                    <option value="6">Воскресенье</option>
+                </select>
+                <input type="text" id="task-title" placeholder="Название (напр. Математика)">
+                <input type="text" id="task-location" placeholder="Место (напр. Каб 302)">
+                <div style="display:flex; gap:5px;">
+                    <input type="time" id="task-start">
+                    <input type="time" id="task-end">
+                </div>
+            </div>
+
+            <div id="form-sleep" style="display:none;">
+                <input type="date" id="sleep-date">
+                <input type="time" id="sleep-time" label="Время пробуждения">
+            </div>
+
+            <button class="primary" style="margin-top:15px; width:100%" onclick="saveEntry()">Сохранить</button>
+            <button onclick="closeModal()" style="width:100%; background:transparent; color:#888; border:none; margin-top:10px;">Отмена</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Логика Данных ---
+        let currentUser = null;
+        const days = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
+        let scheduleData = {}; 
+        let sleepData = [];
+        let myChart = null;
+
+        // --- Авторизация ---
+        function login() {
+            const name = document.getElementById('username').value;
+            if(!name) return;
+            currentUser = name;
+            localStorage.setItem('neonUser', name);
+            loadData();
+            initApp();
+        }
+
+        function logout() {
+            localStorage.removeItem('neonUser');
+            location.reload();
+        }
+
+        function checkAuth() {
+            const savedUser = localStorage.getItem('neonUser');
+            if(savedUser) {
+                currentUser = savedUser;
+                document.getElementById('username').value = savedUser;
+                loadData();
+                initApp();
+            }
+        }
+
+        function loadData() {
+            // Загрузка расписания
+            const savedSchedule = localStorage.getItem(`schedule_${currentUser}`);
+            scheduleData = savedSchedule ? JSON.parse(savedSchedule) : {0:[],1:[],2:[],3:[],4:[],5:[],6:[]};
+            
+            // Загрузка сна
+            const savedSleep = localStorage.getItem(`sleep_${currentUser}`);
+            sleepData = savedSleep ? JSON.parse(savedSleep) : [];
+        }
+
+        function initApp() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            document.getElementById('user-display').textContent = currentUser;
+            renderSchedule();
+            initChart();
+        }
+
+        // --- Рендер Расписания ---
+        function renderSchedule() {
+            const container = document.getElementById('schedule-list');
+            container.innerHTML = '';
+            
+            // Определяем текущий день (0 - ПН, 6 - ВС для нашего массива)
+            let today = new Date().getDay(); 
+            // JS getDay(): 0=Вс, 1=Пн. Нам нужно: 0=Пн... 6=Вс.
+            today = today === 0 ? 6 : today - 1;
+
+            days.forEach((dayName, index) => {
+                const dayDiv = document.createElement('div');
+                // Если сегодня ПН, то index 0 будет active
+                const isActive = (index === today);
+                
+                dayDiv.className = `day-row ${isActive ? 'active-day' : ''}`;
+                
+                let tasksHtml = '';
+                const tasks = scheduleData[index] || [];
+                // Сортировка по времени
+                tasks.sort((a,b) => a.start.localeCompare(b.start));
+
+                if (tasks.length === 0) {
+                    tasksHtml = `<div style="font-size:0.8rem; opacity:0.6;">Нет планов</div>`;
+                } else {
+                    tasks.forEach(task => {
+                        tasksHtml += `
+                            <div class="task-item ${task.title.toLowerCase().includes('урок') ? 'type-lesson' : ''}">
+                                <div>
+                                    <strong>${task.title}</strong>
+                                    <div style="font-size:0.8em; opacity:0.8">${task.location}</div>
+                                </div>
+                                <div style="text-align:right;">${task.start}<br><span style="opacity:0.6">${task.end}</span></div>
+                            </div>
+                        `;
+                    });
+                }
+
+                dayDiv.innerHTML = `
+                    <div class="day-header">
+                        <span>${dayName}</span>
+                        ${isActive ? '<span>СЕГОДНЯ</span>' : ''}
+                    </div>
+                    <div class="task-list">
+                        ${tasksHtml}
+                    </div>
+                `;
+                container.appendChild(dayDiv);
+            });
+        }
+
+        // --- Управление вкладками ---
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active'); // Исправлено на target клика
+            
+            if(tab === 'schedule') {
+                document.getElementById('schedule-section').style.display = 'block';
+                document.getElementById('sleep-section').style.display = 'none';
+            } else {
+                document.getElementById('schedule-section').style.display = 'none';
+                document.getElementById('sleep-section').style.display = 'block';
+                updateChart();
+            }
+        }
+
+        // --- Модальное окно и формы ---
+        function openModal() { document.getElementById('add-modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('add-modal').style.display = 'none'; }
+        
+        function toggleFormFields() {
+            const type = document.getElementById('entry-type').value;
+            if(type === 'lesson') {
+                document.getElementById('form-schedule').style.display = 'block';
+                document.getElementById('form-sleep').style.display = 'none';
+            } else {
+                document.getElementById('form-schedule').style.display = 'none';
+                document.getElementById('form-sleep').style.display = 'block';
+            }
+        }
+
+        function saveEntry() {
+            const type = document.getElementById('entry-type').value;
+            
+            if(type === 'lesson') {
+                const day = document.getElementById('day-select').value;
+                const title = document.getElementById('task-title').value;
+                const loc = document.getElementById('task-location').value;
+                const start = document.getElementById('task-start').value;
+                const end = document.getElementById('task-end').value;
+
+                if(!title || !start) return alert("Введите название и время");
+
+                if(!scheduleData[day]) scheduleData[day] = [];
+                scheduleData[day].push({ title, location: loc, start, end });
+                localStorage.setItem(`schedule_${currentUser}`, JSON.stringify(scheduleData));
+                renderSchedule();
+            } else {
+                const date = document.getElementById('sleep-date').value;
+                const time = document.getElementById('sleep-time').value; // "08:30"
+                
+                if(!date || !time) return alert("Введите дату и время");
+
+                // Преобразуем время в десятичное число для графика (08:30 -> 8.5)
+                const [h, m] = time.split(':');
+                const decimalTime = parseInt(h) + (parseInt(m)/60);
+
+                sleepData.push({ date, timeRaw: time, val: decimalTime });
+                // Сортировка по дате
+                sleepData.sort((a,b) => new Date(a.date) - new Date(b.date));
+                localStorage.setItem(`sleep_${currentUser}`, JSON.stringify(sleepData));
+                updateChart();
+            }
+            closeModal();
+        }
+
+        // --- График Сна (Chart.js) ---
+        function initChart() {
+            const ctx = document.getElementById('sleepChart').getContext('2d');
+            
+            // Градиент для линии (Бирюзовый)
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(0, 255, 213, 0.5)');
+            gradient.addColorStop(1, 'rgba(0, 255, 213, 0)');
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [], // Даты
+                    datasets: [{
+                        label: 'Время пробуждения',
+                        data: [], // Время
+                        borderColor: '#00ffd5',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fff',
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4 // Плавность линий
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            min: 4, max: 14, // Шкала с 4 утра до 14:00
+                            grid: { color: '#333' },
+                            ticks: { color: '#888' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#888' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+            updateChart();
+        }
+
+        function updateChart() {
+            if(!myChart) return;
+            // Берем последние 7 записей
+            const recentData = sleepData.slice(-7);
+            
+            myChart.data.labels = recentData.map(d => {
+                const date = new Date(d.date);
+                return `${date.getDate()}.${date.getMonth()+1}`;
+            });
+            myChart.data.datasets[0].data = recentData.map(d => d.val);
+            myChart.update();
+        }
+
+        // Запуск проверки при загрузке
+        checkAuth();
+    </script>
+</body>
+</html>
