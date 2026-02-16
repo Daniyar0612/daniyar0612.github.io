@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeonFocus - Premium Weekly Planner</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #0d0d0f;
+            --glass-panel: rgba(22, 22, 26, 0.85);
+            --neon-primary: #00ffd5;
+            --neon-glow: rgba(0, 255, 213, 0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #b4b4b4;
+            --hour-height: 60px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Login Screen */
+        #loginScreen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d0d0f 0%, #1a1a1f 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #loginScreen::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--neon-glow) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            50% { transform: translate(10%, 10%) scale(1.1); opacity: 0.5; }
+        }
+
+        .login-card {
+            background: var(--glass-panel);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--neon-primary);
+            border-radius: 20px;
+            padding: 50px 60px;
+            box-shadow: 0 0 40px var(--neon-glow);
+            z-index: 1;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .login-card h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--neon-primary);
+            text-shadow: 0 0 20px var(--neon-glow);
+            letter-spacing: 2px;
+        }
+
+        .login-card p {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(13, 13, 15, 0.6);
+            border: 2px solid rgba(0, 255, 213, 0.3);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 20px var(--neon-glow);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--neon-primary) 0%, #00d4b5 100%);
+            border: none;
+            border-radius: 12px;
+            color: var(--bg-deep);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--neon-glow);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* App Container */
+        #app {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        #app.active {
+            display: block;
+        }
+
+        /* Header */
+        .app-header {
+            background: var(--glass-panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 213, 0.2);
+            border-radius: 16px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-title h2 {
+            font-size: 1.8rem;
+            color: var(--neon-primary);
+            text-shadow: 0 0 15px var(--neon-glow);
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background: rgba(255, 0, 100, 0.1);
+            border: 1px solid rgba(255, 0, 100, 0.5);
+            border-radius: 8px;
+            color: #ff0064;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 0, 100, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 100, 0.3);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            background: var(--glass-panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 213, 0.2);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--neon-primary);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(0, 255, 213, 0.15) 0%, rgba(0, 212, 181, 0.15) 100%);
+            border-color: var(--neon-primary);
+            color: var(--neon-primary);
+            box-shadow: 0 0 20px var(--neon-glow);
+        }
+
+        /* Content Views */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Weekly Schedule */
+        .schedule-container {
+            background: var(--glass-panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 213, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .schedule-grid {
+            display: flex;
+            gap: 0;
+            min-width: 900px;
+            position: relative;
+        }
+
+        /* Time Sidebar */
+        .time-sidebar {
+            width: 80px;
+            flex-shrink: 0;
+            border-right: 1px solid rgba(0, 255, 213, 0.2);
+            padding-right: 10px;
+        }
+
+        .time-slot {
+            height: var(--hour-height);
+            display: flex;
+            align-items: flex-start;
+            padding-top: 5px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Days Grid */
+        .days-grid {
+            flex: 1;
+            display: flex;
+        }
+
+        .day-column {
+            flex: 1;
+            border-right: 1px solid rgba(0, 255, 213, 0.1);
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        .day-column:last-child {
+            border-right: none;
+        }
+
+        .day-header {
+            padding: 10px;
+            text-align: center;
+            font-weight: 700;
+            border-bottom: 1px solid rgba(0, 255, 213, 0.2);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            background: var(--glass-panel);
+            backdrop-filter: blur(20px);
+            z-index: 10;
+        }
+
+        .day-content {
+            position: relative;
+            height: calc(17 * var(--hour-height));
+        }
+
+        .hour-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-top: 1px solid rgba(0, 255, 213, 0.05);
+        }
+
+        /* Active Day Styling */
+        .day-column.active {
+            background: linear-gradient(180deg, rgba(0, 255, 213, 0.15) 0%, rgba(0, 255, 213, 0.08) 100%);
+        }
+
+        .day-column.active .day-header {
+            color: var(--neon-primary);
+            text-shadow: 0 0 10px var(--neon-glow);
+            background: rgba(0, 255, 213, 0.1);
+        }
+
+        /* Task Cards */
+        .task-card {
+            position: absolute;
+            left: 5px;
+            right: 5px;
+            background: rgba(22, 22, 26, 0.95);
+            border: 1px solid var(--neon-primary);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .task-card:hover {
+            transform: translateX(2px);
+            box-shadow: 0 4px 20px var(--neon-glow);
+        }
+
+        .task-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--neon-primary);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .task-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Inverse colors for tasks in active day */
+        .day-column.active .task-card {
+            background: rgba(13, 13, 15, 0.95);
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 15px rgba(0, 255, 213, 0.3);
+        }
+
+        .day-column.active .task-card .task-title {
+            color: var(--neon-primary);
+            text-shadow: 0 0 8px var(--neon-glow);
+        }
+
+        .day-column.active .task-card .task-time {
+            color: var(--text-primary);
+        }
+
+        /* Sleep Analytics */
+        .analytics-container {
+            background: var(--glass-panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 213, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .chart-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 400px;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--neon-primary) 0%, #00d4b5 100%);
+            border: none;
+            border-radius: 50%;
+            color: var(--bg-deep);
+            font-size: 1.8rem;
+            cursor: pointer;
+            box-shadow: 0 8px 30px var(--neon-glow);
+            transition: all 0.3s ease;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 40px var(--neon-glow);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--glass-panel);
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--neon-primary);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 0 50px var(--neon-glow);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h3 {
+            color: var(--neon-primary);
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--neon-primary);
+            transform: rotate(90deg);
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .modal-tab {
+            flex: 1;
+            padding: 12px;
+            background: rgba(13, 13, 15, 0.6);
+            border: 1px solid rgba(0, 255, 213, 0.2);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .modal-tab.active {
+            background: rgba(0, 255, 213, 0.15);
+            border-color: var(--neon-primary);
+            color: var(--neon-primary);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(13, 13, 15, 0.6);
+            border: 1px solid rgba(0, 255, 213, 0.3);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 15px var(--neon-glow);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--neon-primary) 0%, #00d4b5 100%);
+            border: none;
+            border-radius: 10px;
+            color: var(--bg-deep);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--neon-glow);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .schedule-container {
+                padding: 10px;
+            }
+
+            .time-sidebar {
+                width: 60px;
+            }
+
+            .fab {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h1>NeonFocus</h1>
+            <p>Enter the Grid</p>
+            <div class="input-group">
+                <input type="text" id="usernameInput" placeholder="Enter your username" autocomplete="off">
+            </div>
+            <button class="btn-primary" onclick="login()">Initialize System</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app">
+        <!-- Header -->
+        <div class="app-header">
+            <div class="app-title">
+                <h2>NeonFocus</h2>
+            </div>
+            <div class="user-info">
+                <span class="user-name">User: <strong id="displayUsername"></strong></span>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchView('schedule')">Weekly Schedule</button>
+            <button class="tab-btn" onclick="switchView('analytics')">Sleep Analytics</button>
+        </div>
+
+        <!-- Weekly Schedule View -->
+        <div id="scheduleView" class="view active">
+            <div class="schedule-container">
+                <div class="schedule-grid">
+                    <!-- Time Sidebar -->
+                    <div class="time-sidebar">
+                        <div class="day-header" style="height: 50px;"></div>
+                        <div id="timeSlots"></div>
+                    </div>
+                    <!-- Days Grid -->
+                    <div class="days-grid" id="daysGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Analytics View -->
+        <div id="analyticsView" class="view">
+            <div class="analytics-container">
+                <h3 style="color: var(--neon-primary); margin-bottom: 30px; font-size: 1.5rem;">Sleep Analytics - Last 7 Days</h3>
+                <div class="chart-wrapper">
+                    <canvas id="sleepChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <button class="fab" onclick="openModal()">+</button>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-tabs">
+                <button class="modal-tab active" onclick="switchModalTab('plan')">Add Plan</button>
+                <button class="modal-tab" onclick="switchModalTab('sleep')">Log Sleep</button>
+            </div>
+
+            <!-- Add Plan Form -->
+            <div id="planForm" class="form-section active">
+                <form onsubmit="addPlan(event)">
+                    <div class="form-group">
+                        <label>Day</label>
+                        <select id="planDay" required>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="planTitle" placeholder="Meeting, Gym, etc." required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Time</label>
+                            <input type="time" id="planStart" min="07:00" max="23:00" required>
+                        </div>
+                        <div class="form-group">
+                            <label>End Time</label>
+                            <input type="time" id="planEnd" min="07:00" max="23:00" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Add Plan</button>
+                </form>
+            </div>
+
+            <!-- Log Sleep Form -->
+            <div id="sleepForm" class="form-section">
+                <form onsubmit="logSleep(event)">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="sleepDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Wake-up Time</label>
+                        <input type="time" id="wakeupTime" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Log Sleep</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global State
+        let currentUser = null;
+        let currentView = 'schedule';
+        let plans = [];
+        let sleepLogs = [];
+        let sleepChart = null;
+
+        // Constants
+        const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const START_HOUR = 7;
+        const END_HOUR = 23;
+        const HOUR_HEIGHT = 60; // Must match CSS variable
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLogin();
+            setupTimeSlots();
+            setupDaysGrid();
+        });
+
+        // Authentication
+        function checkLogin() {
+            const savedUser = localStorage.getItem('neonFocusUser');
+            if (savedUser) {
+                currentUser = savedUser;
+                showApp();
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (username) {
+                currentUser = username;
+                localStorage.setItem('neonFocusUser', username);
+                showApp();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('neonFocusUser');
+            currentUser = null;
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('app').classList.remove('active');
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('app').classList.add('active');
+            document.getElementById('displayUsername').textContent = currentUser;
+            loadData();
+            renderSchedule();
+            renderSleepChart();
+        }
+
+        // Data Management
+        function loadData() {
+            const key = `neonFocus_${currentUser}`;
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                const data = JSON.parse(saved);
+                plans = data.plans || [];
+                sleepLogs = data.sleepLogs || [];
+            } else {
+                plans = [];
+                sleepLogs = [];
+            }
+        }
+
+        function saveData() {
+            const key = `neonFocus_${currentUser}`;
+            localStorage.setItem(key, JSON.stringify({ plans, sleepLogs }));
+        }
+
+        // View Navigation
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            
+            if (view === 'schedule') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('scheduleView').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('analyticsView').classList.add('active');
+                renderSleepChart();
+            }
+        }
+
+        // Time Slots Setup
+        function setupTimeSlots() {
+            const container = document.getElementById('timeSlots');
+            container.innerHTML = '';
+            
+            for (let hour = START_HOUR; hour <= END_HOUR; hour++) {
+                const slot = document.createElement('div');
+                slot.className = 'time-slot';
+                slot.textContent = `${hour.toString().padStart(2, '0')}:00`;
+                container.appendChild(slot);
+            }
+        }
+
+        // Days Grid Setup
+        function setupDaysGrid() {
+            const container = document.getElementById('daysGrid');
+            container.innerHTML = '';
+            
+            const today = new Date().getDay();
+            const currentDay = today === 0 ? 6 : today - 1; // Convert to 0=Monday, 6=Sunday
+            
+            DAYS.forEach((day, index) => {
+                const column = document.createElement('div');
+                column.className = 'day-column';
+                if (index === currentDay) {
+                    column.classList.add('active');
+                }
+                column.dataset.day = day;
+                
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.textContent = day;
+                column.appendChild(header);
+                
+                const content = document.createElement('div');
+                content.className = 'day-content';
+                
+                // Add hour lines
+                for (let i = 0; i <= (END_HOUR - START_HOUR); i++) {
+                    const line = document.createElement('div');
+                    line.className = 'hour-line';
+                    line.style.top = `${i * HOUR_HEIGHT}px`;
+                    content.appendChild(line);
+                }
+                
+                column.appendChild(content);
+                container.appendChild(column);
+            });
+        }
+
+        // Schedule Rendering
+        function renderSchedule() {
+            // Clear existing task cards
+            document.querySelectorAll('.task-card').forEach(card => card.remove());
+            
+            // Render each plan
+            plans.forEach((plan, index) => {
+                const column = document.querySelector(`.day-column[data-day="${plan.day}"]`);
+                if (!column) return;
+                
+                const content = column.querySelector('.day-content');
+                const card = createTaskCard(plan, index);
+                content.appendChild(card);
+            });
+        }
+
+        function createTaskCard(plan, index) {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            
+            // Calculate position and height
+            const { top, height } = calculateTaskPosition(plan.startTime, plan.endTime);
+            card.style.top = `${top}px`;
+            card.style.height = `${height}px`;
+            
+            card.innerHTML = `
+                <div class="task-title">${plan.title}</div>
+                <div class="task-time">${plan.startTime} - ${plan.endTime}</div>
+            `;
+            
+            // Add click to delete
+            card.addEventListener('click', () => deletePlan(index));
+            
+            return card;
+        }
+
+        function calculateTaskPosition(startTime, endTime) {
+            // Parse time strings (HH:MM)
+            const [startHour, startMin] = startTime.split(':').map(Number);
+            const [endHour, endMin] = endTime.split(':').map(Number);
+            
+            // Calculate minutes from START_HOUR
+            const startMinutes = (startHour - START_HOUR) * 60 + startMin;
+            const endMinutes = (endHour - START_HOUR) * 60 + endMin;
+            const duration = endMinutes - startMinutes;
+            
+            // Convert to pixels
+            const pixelsPerMinute = HOUR_HEIGHT / 60;
+            const top = startMinutes * pixelsPerMinute;
+            const height = duration * pixelsPerMinute;
+            
+            return { top, height };
+        }
+
+        // Modal Management
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            resetForms();
+        }
+
+        function switchModalTab(tab) {
+            document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            
+            if (tab === 'plan') {
+                document.querySelectorAll('.modal-tab')[0].classList.add('active');
+                document.getElementById('planForm').classList.add('active');
+            } else {
+                document.querySelectorAll('.modal-tab')[1].classList.add('active');
+                document.getElementById('sleepForm').classList.add('active');
+            }
+        }
+
+        function resetForms() {
+            document.getElementById('planDay').selectedIndex = 0;
+            document.getElementById('planTitle').value = '';
+            document.getElementById('planStart').value = '';
+            document.getElementById('planEnd').value = '';
+            document.getElementById('sleepDate').value = '';
+            document.getElementById('wakeupTime').value = '';
+        }
+
+        // Plan Management
+        function addPlan(event) {
+            event.preventDefault();
+            
+            const day = document.getElementById('planDay').value;
+            const title = document.getElementById('planTitle').value.trim();
+            const startTime = document.getElementById('planStart').value;
+            const endTime = document.getElementById('planEnd').value;
+            
+            // Validate times
+            if (startTime >= endTime) {
+                alert('End time must be after start time');
+                return;
+            }
+            
+            const plan = { day, title, startTime, endTime };
+            plans.push(plan);
+            saveData();
+            renderSchedule();
+            closeModal();
+        }
+
+        function deletePlan(index) {
+            if (confirm('Delete this plan?')) {
+                plans.splice(index, 1);
+                saveData();
+                renderSchedule();
+            }
+        }
+
+        // Sleep Logging
+        function logSleep(event) {
+            event.preventDefault();
+            
+            const date = document.getElementById('sleepDate').value;
+            const wakeupTime = document.getElementById('wakeupTime').value;
+            
+            const log = { date, wakeupTime };
+            sleepLogs.push(log);
+            saveData();
+            closeModal();
+            
+            if (currentView === 'analytics') {
+                renderSleepChart();
+            }
+        }
+
+        // Sleep Chart
+        function renderSleepChart() {
+            const ctx = document.getElementById('sleepChart');
+            if (!ctx) return;
+            
+            // Get last 7 logs
+            const last7 = sleepLogs.slice(-7);
+            
+            if (last7.length === 0) {
+                // Show empty state
+                if (sleepChart) {
+                    sleepChart.destroy();
+                    sleepChart = null;
+                }
+                return;
+            }
+            
+            // Prepare data
+            const labels = last7.map(log => {
+                const date = new Date(log.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            
+            const data = last7.map(log => {
+                const [hours, minutes] = log.wakeupTime.split(':').map(Number);
+                return hours + minutes / 60; // Convert to decimal hours
+            });
+            
+            // Destroy existing chart
+            if (sleepChart) {
+                sleepChart.destroy();
+            }
+            
+            // Create new chart
+            sleepChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Wake-up Time',
+                        data: data,
+                        borderColor: '#00ffd5',
+                        backgroundColor: 'rgba(0, 255, 213, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#00ffd5',
+                        pointBorderColor: '#0d0d0f',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(22, 22, 26, 0.95)',
+                            titleColor: '#00ffd5',
+                            bodyColor: '#ffffff',
+                            borderColor: '#00ffd5',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed.y;
+                                    const hours = Math.floor(value);
+                                    const minutes = Math.round((value - hours) * 60);
+                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 5,
+                            max: 12,
+                            ticks: {
+                                color: '#b4b4b4',
+                                callback: function(value) {
+                                    return `${value}:00`;
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 255, 213, 0.1)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#b4b4b4'
+                            },
+                            grid: {
+                                color: 'rgba(0, 255, 213, 0.05)',
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Enter key on login
+        document.getElementById('usernameInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+    </script>
+</body>
+</html>
