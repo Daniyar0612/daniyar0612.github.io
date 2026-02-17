@@ -2,417 +2,433 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeonFocus - Premium Weekly Planner</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>NeonFocus - Weekly Planner</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        :root {
-            --bg-deep: #0d0d0f;
-            --glass-panel: rgba(22, 22, 26, 0.85);
-            --neon-primary: #00ffd5;
-            --neon-glow: rgba(0, 255, 213, 0.4);
-            --text-primary: #ffffff;
-            --text-secondary: #b4b4b4;
-            --hour-height: 60px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg-deep);
-            color: var(--text-primary);
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.6;
             overflow-x: hidden;
         }
 
         /* Login Screen */
-        #loginScreen {
+        .login-screen {
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0d0d0f 0%, #1a1a1f 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        #loginScreen::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, var(--neon-glow) 0%, transparent 70%);
-            animation: pulse 8s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            50% { transform: translate(10%, 10%) scale(1.1); opacity: 0.5; }
-        }
-
-        .login-card {
-            background: var(--glass-panel);
-            backdrop-filter: blur(20px);
-            border: 2px solid var(--neon-primary);
-            border-radius: 20px;
-            padding: 50px 60px;
-            box-shadow: 0 0 40px var(--neon-glow);
-            z-index: 1;
-            text-align: center;
-            max-width: 450px;
-            width: 90%;
-        }
-
-        .login-card h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            color: var(--neon-primary);
-            text-shadow: 0 0 20px var(--neon-glow);
-            letter-spacing: 2px;
-        }
-
-        .login-card p {
-            color: var(--text-secondary);
-            margin-bottom: 40px;
-            font-size: 1rem;
-        }
-
-        .input-group {
-            margin-bottom: 30px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 16px 20px;
-            background: rgba(13, 13, 15, 0.6);
-            border: 2px solid rgba(0, 255, 213, 0.3);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .input-group input:focus {
-            border-color: var(--neon-primary);
-            box-shadow: 0 0 20px var(--neon-glow);
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--neon-primary) 0%, #00d4b5 100%);
-            border: none;
-            border-radius: 12px;
-            color: var(--bg-deep);
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--neon-glow);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        /* App Container */
-        #app {
-            display: none;
-            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
         }
 
-        #app.active {
+        .login-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .login-card p {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .input-box {
+            margin-bottom: 20px;
+        }
+
+        .input-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            touch-action: manipulation;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* App Container */
+        .app {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .app.active {
             display: block;
         }
 
         /* Header */
-        .app-header {
-            background: var(--glass-panel);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 255, 213, 0.2);
-            border-radius: 16px;
-            padding: 20px 30px;
-            margin-bottom: 20px;
+        .header {
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 12px;
         }
 
-        .app-title h2 {
-            font-size: 1.8rem;
-            color: var(--neon-primary);
-            text-shadow: 0 0 15px var(--neon-glow);
-            font-weight: 700;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-name {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
+        .header h2 {
+            color: #667eea;
+            font-size: 1.4rem;
         }
 
         .btn-logout {
-            padding: 10px 20px;
-            background: rgba(255, 0, 100, 0.1);
-            border: 1px solid rgba(255, 0, 100, 0.5);
+            padding: 8px 16px;
+            background: #fc8181;
+            color: white;
+            border: none;
             border-radius: 8px;
-            color: #ff0064;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            touch-action: manipulation;
         }
 
-        .btn-logout:hover {
-            background: rgba(255, 0, 100, 0.2);
-            box-shadow: 0 0 15px rgba(255, 0, 100, 0.3);
+        .btn-logout:active {
+            background: #f56565;
         }
 
-        /* Navigation Tabs */
-        .nav-tabs {
+        .user-badge {
+            background: #edf2f7;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #4a5568;
+            display: inline-block;
+        }
+
+        /* Tabs */
+        .tabs {
             display: flex;
+            gap: 8px;
+            padding: 15px 20px 0;
+            background: white;
+            position: sticky;
+            top: 80px;
+            z-index: 49;
+            padding-bottom: 15px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 14px 10px;
+            background: #f7fafc;
+            border: none;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #718096;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            touch-action: manipulation;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Content */
+        .content {
+            display: none;
+            padding: 15px;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        /* Schedule - Mobile Day View */
+        .day-selector {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .day-selector::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .day-selector::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
+        }
+
+        .day-btn {
+            min-width: 80px;
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #718096;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            touch-action: manipulation;
+            transition: all 0.3s;
+        }
+
+        .day-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .day-btn.today {
+            border-color: #667eea;
+        }
+
+        /* Timeline View */
+        .timeline {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .time-slot {
+            border-bottom: 1px solid #f7fafc;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            min-height: 70px;
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        .time-slot:active {
+            background: #f7fafc;
+        }
+
+        .time-label {
+            font-weight: 600;
+            color: #718096;
+            font-size: 0.85rem;
+            min-width: 60px;
+            padding-top: 2px;
+        }
+
+        .slot-content {
+            flex: 1;
+            position: relative;
+        }
+
+        .empty-slot {
+            color: #cbd5e0;
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        /* Task Card - Mobile */
+        .task-card-mobile {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            position: relative;
+            touch-action: manipulation;
+        }
+
+        .task-card-mobile:active {
+            transform: scale(0.98);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .task-title-mobile {
+            font-weight: 600;
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        .task-delete {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            touch-action: manipulation;
+        }
+
+        .task-delete:active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .task-time-mobile {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .task-duration {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* Sleep Chart */
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 15px;
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .chart-wrapper {
+            height: 300px;
+            width: 100%;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+        }
+
+        .no-data-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* Sleep Stats */
+        .sleep-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 20px;
         }
 
-        .tab-btn {
-            flex: 1;
-            padding: 16px;
-            background: var(--glass-panel);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 255, 213, 0.2);
-            border-radius: 12px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .tab-btn:hover {
-            border-color: var(--neon-primary);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, rgba(0, 255, 213, 0.15) 0%, rgba(0, 212, 181, 0.15) 100%);
-            border-color: var(--neon-primary);
-            color: var(--neon-primary);
-            box-shadow: 0 0 20px var(--neon-glow);
-        }
-
-        /* Content Views */
-        .view {
-            display: none;
-        }
-
-        .view.active {
-            display: block;
-        }
-
-        /* Weekly Schedule */
-        .schedule-container {
-            background: var(--glass-panel);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 255, 213, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            overflow-x: auto;
-        }
-
-        .schedule-grid {
-            display: flex;
-            gap: 0;
-            min-width: 900px;
-            position: relative;
-        }
-
-        /* Time Sidebar */
-        .time-sidebar {
-            width: 80px;
-            flex-shrink: 0;
-            border-right: 1px solid rgba(0, 255, 213, 0.2);
-            padding-right: 10px;
-        }
-
-        .time-slot {
-            height: var(--hour-height);
-            display: flex;
-            align-items: flex-start;
-            padding-top: 5px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Days Grid */
-        .days-grid {
-            flex: 1;
-            display: flex;
-        }
-
-        .day-column {
-            flex: 1;
-            border-right: 1px solid rgba(0, 255, 213, 0.1);
-            position: relative;
-            transition: background 0.3s ease;
-        }
-
-        .day-column:last-child {
-            border-right: none;
-        }
-
-        .day-header {
-            padding: 10px;
+        .sleep-stat {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 10px;
             text-align: center;
-            font-weight: 700;
-            border-bottom: 1px solid rgba(0, 255, 213, 0.2);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            position: sticky;
-            top: 0;
-            background: var(--glass-panel);
-            backdrop-filter: blur(20px);
-            z-index: 10;
         }
 
-        .day-content {
-            position: relative;
-            height: calc(17 * var(--hour-height));
-        }
-
-        .hour-line {
-            position: absolute;
-            left: 0;
-            right: 0;
-            border-top: 1px solid rgba(0, 255, 213, 0.05);
-        }
-
-        /* Active Day Styling */
-        .day-column.active {
-            background: linear-gradient(180deg, rgba(0, 255, 213, 0.15) 0%, rgba(0, 255, 213, 0.08) 100%);
-        }
-
-        .day-column.active .day-header {
-            color: var(--neon-primary);
-            text-shadow: 0 0 10px var(--neon-glow);
-            background: rgba(0, 255, 213, 0.1);
-        }
-
-        /* Task Cards */
-        .task-card {
-            position: absolute;
-            left: 5px;
-            right: 5px;
-            background: rgba(22, 22, 26, 0.95);
-            border: 1px solid var(--neon-primary);
-            border-radius: 8px;
-            padding: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .task-card:hover {
-            transform: translateX(2px);
-            box-shadow: 0 4px 20px var(--neon-glow);
-        }
-
-        .task-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--neon-primary);
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .task-time {
+        .sleep-stat-label {
             font-size: 0.75rem;
-            color: var(--text-secondary);
+            color: #718096;
+            margin-bottom: 5px;
         }
 
-        /* Inverse colors for tasks in active day */
-        .day-column.active .task-card {
-            background: rgba(13, 13, 15, 0.95);
-            border-color: var(--neon-primary);
-            box-shadow: 0 0 15px rgba(0, 255, 213, 0.3);
+        .sleep-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
         }
 
-        .day-column.active .task-card .task-title {
-            color: var(--neon-primary);
-            text-shadow: 0 0 8px var(--neon-glow);
-        }
-
-        .day-column.active .task-card .task-time {
-            color: var(--text-primary);
-        }
-
-        /* Sleep Analytics */
-        .analytics-container {
-            background: var(--glass-panel);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 255, 213, 0.2);
-            border-radius: 16px;
-            padding: 30px;
-        }
-
-        .chart-wrapper {
-            max-width: 1000px;
-            margin: 0 auto;
-            height: 400px;
-        }
-
-        /* Floating Action Button */
-        .fab {
+        /* Add Button - Mobile Optimized */
+        .add-btn {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, var(--neon-primary) 0%, #00d4b5 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             border-radius: 50%;
-            color: var(--bg-deep);
-            font-size: 1.8rem;
+            color: white;
+            font-size: 2rem;
             cursor: pointer;
-            box-shadow: 0 8px 30px var(--neon-glow);
-            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
+            touch-action: manipulation;
         }
 
-        .fab:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 12px 40px var(--neon-glow);
+        .add-btn:active {
+            transform: scale(0.95);
         }
 
-        /* Modal */
+        /* Modal - Mobile Optimized */
         .modal {
             display: none;
             position: fixed;
@@ -420,89 +436,85 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.3s ease;
+            align-items: flex-end;
         }
 
         .modal.active {
             display: flex;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background: var(--glass-panel);
-            backdrop-filter: blur(30px);
-            border: 2px solid var(--neon-primary);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 0 50px var(--neon-glow);
+        .modal-box {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 25px 20px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
             animation: slideUp 0.3s ease;
         }
 
         @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .modal-header h3 {
-            color: var(--neon-primary);
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+            color: #2d3748;
         }
 
-        .modal-close {
+        .close-btn {
             background: none;
             border: none;
-            color: var(--text-secondary);
-            font-size: 1.8rem;
+            font-size: 2rem;
+            color: #a0aec0;
             cursor: pointer;
-            transition: all 0.3s ease;
+            line-height: 1;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
         }
 
-        .modal-close:hover {
-            color: var(--neon-primary);
-            transform: rotate(90deg);
+        .close-btn:active {
+            color: #4a5568;
         }
 
         .modal-tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 25px;
         }
 
         .modal-tab {
             flex: 1;
             padding: 12px;
-            background: rgba(13, 13, 15, 0.6);
-            border: 1px solid rgba(0, 255, 213, 0.2);
-            border-radius: 8px;
-            color: var(--text-secondary);
+            background: #f7fafc;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
             font-weight: 600;
+            color: #718096;
+            font-size: 0.9rem;
+            touch-action: manipulation;
+            transition: all 0.3s;
         }
 
         .modal-tab.active {
-            background: rgba(0, 255, 213, 0.15);
-            border-color: var(--neon-primary);
-            color: var(--neon-primary);
+            background: #667eea;
+            color: white;
         }
 
         .form-section {
@@ -519,154 +531,211 @@
 
         .form-group label {
             display: block;
-            color: var(--text-secondary);
             margin-bottom: 8px;
-            font-size: 0.9rem;
             font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9rem;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 12px 16px;
-            background: rgba(13, 13, 15, 0.6);
-            border: 1px solid rgba(0, 255, 213, 0.3);
-            border-radius: 8px;
-            color: var(--text-primary);
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
+            transition: all 0.3s;
         }
 
         .form-group input:focus,
         .form-group select:focus {
-            border-color: var(--neon-primary);
-            box-shadow: 0 0 15px var(--neon-glow);
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .form-row {
-            display: flex;
-            gap: 15px;
-        }
-
-        .form-row .form-group {
-            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
         .btn-submit {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--neon-primary) 0%, #00d4b5 100%);
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             border: none;
-            border-radius: 10px;
-            color: var(--bg-deep);
-            font-size: 1rem;
-            font-weight: 700;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            margin-top: 10px;
+            touch-action: manipulation;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px var(--neon-glow);
+        .btn-submit:active {
+            transform: scale(0.98);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .app-header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
+        /* Sync Status */
+        .sync-status {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-size: 0.85rem;
+            color: #4a5568;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 99;
+        }
 
-            .schedule-container {
-                padding: 10px;
-            }
+        .sync-status.show {
+            display: flex;
+            animation: fadeInOut 2s ease;
+        }
 
-            .time-sidebar {
-                width: 60px;
-            }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
 
-            .fab {
-                bottom: 20px;
-                right: 20px;
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            background: #48bb78;
+            border-radius: 50%;
+        }
+
+        /* Stats Summary */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        /* Safe areas for notched phones */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .header {
+                padding-top: calc(15px + env(safe-area-inset-top));
+            }
+            
+            .app {
+                padding-bottom: calc(80px + env(safe-area-inset-bottom));
+            }
+            
+            .add-btn {
+                bottom: calc(20px + env(safe-area-inset-bottom));
             }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 </head>
 <body>
     <!-- Login Screen -->
-    <div id="loginScreen">
+    <div id="loginScreen" class="login-screen">
         <div class="login-card">
-            <h1>NeonFocus</h1>
-            <p>Enter the Grid</p>
-            <div class="input-group">
-                <input type="text" id="usernameInput" placeholder="Enter your username" autocomplete="off">
+            <h1>📅 NeonFocus</h1>
+            <p>Your personal weekly planner</p>
+            <div class="input-box">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter your username" autocomplete="off">
             </div>
-            <button class="btn-primary" onclick="login()">Initialize System</button>
+            <button class="btn" onclick="login()">Sign In</button>
         </div>
     </div>
 
     <!-- Main App -->
-    <div id="app">
+    <div id="app" class="app">
         <!-- Header -->
-        <div class="app-header">
-            <div class="app-title">
-                <h2>NeonFocus</h2>
-            </div>
-            <div class="user-info">
-                <span class="user-name">User: <strong id="displayUsername"></strong></span>
+        <div class="header">
+            <div class="header-top">
+                <h2>📅 NeonFocus</h2>
                 <button class="btn-logout" onclick="logout()">Logout</button>
             </div>
+            <div class="user-badge">👤 <span id="displayUser"></span></div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchView('schedule')">Weekly Schedule</button>
-            <button class="tab-btn" onclick="switchView('analytics')">Sleep Analytics</button>
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('schedule')">📆 Schedule</div>
+            <div class="tab" onclick="switchTab('sleep')">😴 Sleep</div>
         </div>
 
-        <!-- Weekly Schedule View -->
-        <div id="scheduleView" class="view active">
-            <div class="schedule-container">
-                <div class="schedule-grid">
-                    <!-- Time Sidebar -->
-                    <div class="time-sidebar">
-                        <div class="day-header" style="height: 50px;"></div>
-                        <div id="timeSlots"></div>
-                    </div>
-                    <!-- Days Grid -->
-                    <div class="days-grid" id="daysGrid"></div>
+        <!-- Weekly Schedule -->
+        <div id="scheduleContent" class="content active">
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="todayCount">0</div>
+                    <div class="stat-label">Today's Plans</div>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="weekCount">0</div>
+                    <div class="stat-label">This Week</div>
+                </div>
+            </div>
+
+            <!-- Day Selector -->
+            <div class="day-selector" id="daySelector"></div>
+
+            <!-- Timeline -->
+            <div class="timeline" id="timeline"></div>
+        </div>
+
+        <!-- Sleep Analytics -->
+        <div id="sleepContent" class="content">
+            <div class="chart-container">
+                <div class="chart-title">Sleep Analytics</div>
+                <div id="sleepStatsArea"></div>
+                <div id="chartArea"></div>
             </div>
         </div>
 
-        <!-- Sleep Analytics View -->
-        <div id="analyticsView" class="view">
-            <div class="analytics-container">
-                <h3 style="color: var(--neon-primary); margin-bottom: 30px; font-size: 1.5rem;">Sleep Analytics - Last 7 Days</h3>
-                <div class="chart-wrapper">
-                    <canvas id="sleepChart"></canvas>
-                </div>
-            </div>
-        </div>
+        <!-- Add Button -->
+        <button class="add-btn" onclick="openModal()">+</button>
 
-        <!-- Floating Action Button -->
-        <button class="fab" onclick="openModal()">+</button>
+        <!-- Sync Status -->
+        <div id="syncStatus" class="sync-status">
+            <div class="sync-dot"></div>
+            <span>Saved</span>
+        </div>
     </div>
 
     <!-- Modal -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
+    <div id="modal" class="modal" onclick="closeModalOnBackdrop(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3>Add New</h3>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
+
             <div class="modal-tabs">
                 <button class="modal-tab active" onclick="switchModalTab('plan')">Add Plan</button>
                 <button class="modal-tab" onclick="switchModalTab('sleep')">Log Sleep</button>
@@ -689,16 +758,16 @@
                     </div>
                     <div class="form-group">
                         <label>Title</label>
-                        <input type="text" id="planTitle" placeholder="Meeting, Gym, etc." required>
+                        <input type="text" id="planTitle" placeholder="Meeting, Workout, etc." required>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Start Time</label>
-                            <input type="time" id="planStart" min="07:00" max="23:00" required>
+                            <label>Start</label>
+                            <input type="time" id="planStart" required>
                         </div>
                         <div class="form-group">
-                            <label>End Time</label>
-                            <input type="time" id="planEnd" min="07:00" max="23:00" required>
+                            <label>End</label>
+                            <input type="time" id="planEnd" required>
                         </div>
                     </div>
                     <button type="submit" class="btn-submit">Add Plan</button>
@@ -714,7 +783,7 @@
                     </div>
                     <div class="form-group">
                         <label>Wake-up Time</label>
-                        <input type="time" id="wakeupTime" required>
+                        <input type="time" id="wakeTime" required>
                     </div>
                     <button type="submit" class="btn-submit">Log Sleep</button>
                 </form>
@@ -723,68 +792,82 @@
     </div>
 
     <script>
-        // Global State
+        // Global variables
         let currentUser = null;
-        let currentView = 'schedule';
         let plans = [];
         let sleepLogs = [];
         let sleepChart = null;
-
-        // Constants
+        let selectedDay = '';
         const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const START_HOUR = 7;
-        const END_HOUR = 23;
-        const HOUR_HEIGHT = 60; // Must match CSS variable
+        const HOURS = Array.from({length: 17}, (_, i) => i + 7); // 7:00 to 23:00
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             checkLogin();
-            setupTimeSlots();
-            setupDaysGrid();
+            setTodayAsDefault();
         });
+
+        function setTodayAsDefault() {
+            const today = new Date().getDay();
+            const todayIndex = today === 0 ? 6 : today - 1;
+            selectedDay = DAYS[todayIndex];
+        }
 
         // Authentication
         function checkLogin() {
-            const savedUser = localStorage.getItem('neonFocusUser');
-            if (savedUser) {
-                currentUser = savedUser;
+            const saved = localStorage.getItem('neonFocusUser');
+            if (saved) {
+                currentUser = saved;
                 showApp();
             }
         }
 
         function login() {
-            const username = document.getElementById('usernameInput').value.trim();
+            const username = document.getElementById('username').value.trim();
             if (username) {
                 currentUser = username;
                 localStorage.setItem('neonFocusUser', username);
+                plans = [];
+                sleepLogs = [];
                 showApp();
             }
         }
 
         function logout() {
-            localStorage.removeItem('neonFocusUser');
-            currentUser = null;
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('app').classList.remove('active');
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                plans = [];
+                sleepLogs = [];
+                localStorage.removeItem('neonFocusUser');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('app').classList.remove('active');
+            }
         }
 
         function showApp() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('app').classList.add('active');
-            document.getElementById('displayUsername').textContent = currentUser;
+            document.getElementById('displayUser').textContent = currentUser;
             loadData();
-            renderSchedule();
-            renderSleepChart();
+            buildDaySelector();
+            renderTimeline();
+            updateStats();
         }
 
         // Data Management
         function loadData() {
-            const key = `neonFocus_${currentUser}`;
+            const key = `neonFocus_${currentUser}_data`;
             const saved = localStorage.getItem(key);
             if (saved) {
-                const data = JSON.parse(saved);
-                plans = data.plans || [];
-                sleepLogs = data.sleepLogs || [];
+                try {
+                    const data = JSON.parse(saved);
+                    plans = data.plans || [];
+                    sleepLogs = data.sleepLogs || [];
+                } catch (e) {
+                    console.error('Error loading data:', e);
+                    plans = [];
+                    sleepLogs = [];
+                }
             } else {
                 plans = [];
                 sleepLogs = [];
@@ -792,144 +875,215 @@
         }
 
         function saveData() {
-            const key = `neonFocus_${currentUser}`;
-            localStorage.setItem(key, JSON.stringify({ plans, sleepLogs }));
+            const key = `neonFocus_${currentUser}_data`;
+            const data = { plans, sleepLogs };
+            localStorage.setItem(key, JSON.stringify(data));
+            showSync();
         }
 
-        // View Navigation
-        function switchView(view) {
-            currentView = view;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            
-            if (view === 'schedule') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('scheduleView').classList.add('active');
+        function showSync() {
+            const status = document.getElementById('syncStatus');
+            status.classList.add('show');
+            setTimeout(() => status.classList.remove('show'), 2000);
+        }
+
+        // Tab Navigation
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+
+            if (tab === 'schedule') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('scheduleContent').classList.add('active');
             } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('analyticsView').classList.add('active');
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('sleepContent').classList.add('active');
                 renderSleepChart();
             }
         }
 
-        // Time Slots Setup
-        function setupTimeSlots() {
-            const container = document.getElementById('timeSlots');
-            container.innerHTML = '';
-            
-            for (let hour = START_HOUR; hour <= END_HOUR; hour++) {
+        // Day Selector
+        function buildDaySelector() {
+            const selector = document.getElementById('daySelector');
+            selector.innerHTML = '';
+
+            const today = new Date().getDay();
+            const todayIndex = today === 0 ? 6 : today - 1;
+
+            DAYS.forEach((day, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'day-btn';
+                if (day === selectedDay) btn.classList.add('active');
+                if (index === todayIndex) btn.classList.add('today');
+                btn.textContent = day.substring(0, 3);
+                btn.onclick = () => selectDay(day);
+                selector.appendChild(btn);
+            });
+        }
+
+        function selectDay(day) {
+            selectedDay = day;
+            buildDaySelector();
+            renderTimeline();
+        }
+
+        // Timeline Rendering
+        function renderTimeline() {
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = '';
+
+            const dayPlans = plans.filter(p => p.day === selectedDay);
+
+            HOURS.forEach(hour => {
                 const slot = document.createElement('div');
                 slot.className = 'time-slot';
-                slot.textContent = `${hour.toString().padStart(2, '0')}:00`;
-                container.appendChild(slot);
-            }
-        }
 
-        // Days Grid Setup
-        function setupDaysGrid() {
-            const container = document.getElementById('daysGrid');
-            container.innerHTML = '';
-            
-            const today = new Date().getDay();
-            const currentDay = today === 0 ? 6 : today - 1; // Convert to 0=Monday, 6=Sunday
-            
-            DAYS.forEach((day, index) => {
-                const column = document.createElement('div');
-                column.className = 'day-column';
-                if (index === currentDay) {
-                    column.classList.add('active');
-                }
-                column.dataset.day = day;
-                
-                const header = document.createElement('div');
-                header.className = 'day-header';
-                header.textContent = day;
-                column.appendChild(header);
-                
+                const label = document.createElement('div');
+                label.className = 'time-label';
+                label.textContent = `${hour.toString().padStart(2, '0')}:00`;
+
                 const content = document.createElement('div');
-                content.className = 'day-content';
-                
-                // Add hour lines
-                for (let i = 0; i <= (END_HOUR - START_HOUR); i++) {
-                    const line = document.createElement('div');
-                    line.className = 'hour-line';
-                    line.style.top = `${i * HOUR_HEIGHT}px`;
-                    content.appendChild(line);
+                content.className = 'slot-content';
+
+                const startingPlans = dayPlans.filter(p => {
+                    const startHour = parseInt(p.startTime.split(':')[0]);
+                    return startHour === hour;
+                });
+
+                const ongoingPlan = dayPlans.find(p => {
+                    const startHour = parseInt(p.startTime.split(':')[0]);
+                    const endHour = parseInt(p.endTime.split(':')[0]);
+                    const endMin = parseInt(p.endTime.split(':')[1]);
+                    
+                    return startHour < hour && (endHour > hour || (endHour === hour && endMin > 0));
+                });
+
+                if (startingPlans.length > 0) {
+                    startingPlans.forEach((plan) => {
+                        const globalIndex = plans.indexOf(plan);
+                        const card = createMobileTaskCard(plan, globalIndex);
+                        content.appendChild(card);
+                    });
+                } else if (ongoingPlan) {
+                    const continuation = document.createElement('div');
+                    continuation.style.cssText = `
+                        padding: 10px;
+                        background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+                        border-radius: 8px;
+                        border-left: 4px solid #667eea;
+                        color: #667eea;
+                        font-size: 0.85rem;
+                        font-weight: 600;
+                    `;
+                    continuation.textContent = `↑ ${ongoingPlan.title} (continued)`;
+                    content.appendChild(continuation);
+                } else {
+                    const empty = document.createElement('div');
+                    empty.className = 'empty-slot';
+                    empty.textContent = 'Tap to add plan';
+                    content.appendChild(empty);
+                    slot.onclick = () => quickAdd(selectedDay, hour);
                 }
-                
-                column.appendChild(content);
-                container.appendChild(column);
+
+                slot.appendChild(label);
+                slot.appendChild(content);
+                timeline.appendChild(slot);
             });
         }
 
-        // Schedule Rendering
-        function renderSchedule() {
-            // Clear existing task cards
-            document.querySelectorAll('.task-card').forEach(card => card.remove());
-            
-            // Render each plan
-            plans.forEach((plan, index) => {
-                const column = document.querySelector(`.day-column[data-day="${plan.day}"]`);
-                if (!column) return;
-                
-                const content = column.querySelector('.day-content');
-                const card = createTaskCard(plan, index);
-                content.appendChild(card);
-            });
-        }
-
-        function createTaskCard(plan, index) {
+        function createMobileTaskCard(plan, index) {
             const card = document.createElement('div');
-            card.className = 'task-card';
+            card.className = 'task-card-mobile';
+
+            const header = document.createElement('div');
+            header.className = 'task-header';
+
+            const title = document.createElement('div');
+            title.className = 'task-title-mobile';
+            title.textContent = plan.title;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'task-delete';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                deletePlan(index);
+            };
+
+            header.appendChild(title);
+            header.appendChild(deleteBtn);
+
+            const time = document.createElement('div');
+            time.className = 'task-time-mobile';
+            time.textContent = `${plan.startTime} - ${plan.endTime}`;
+
+            const [startH, startM] = plan.startTime.split(':').map(Number);
+            const [endH, endM] = plan.endTime.split(':').map(Number);
+            const durationMinutes = (endH * 60 + endM) - (startH * 60 + startM);
+            const hours = Math.floor(durationMinutes / 60);
+            const minutes = durationMinutes % 60;
             
-            // Calculate position and height
-            const { top, height } = calculateTaskPosition(plan.startTime, plan.endTime);
-            card.style.top = `${top}px`;
-            card.style.height = `${height}px`;
-            
-            card.innerHTML = `
-                <div class="task-title">${plan.title}</div>
-                <div class="task-time">${plan.startTime} - ${plan.endTime}</div>
-            `;
-            
-            // Add click to delete
-            card.addEventListener('click', () => deletePlan(index));
-            
+            const duration = document.createElement('div');
+            duration.className = 'task-duration';
+            if (hours > 0 && minutes > 0) {
+                duration.textContent = `Duration: ${hours}h ${minutes}m`;
+            } else if (hours > 0) {
+                duration.textContent = `Duration: ${hours}h`;
+            } else {
+                duration.textContent = `Duration: ${minutes}m`;
+            }
+
+            card.appendChild(header);
+            card.appendChild(time);
+            card.appendChild(duration);
+
             return card;
         }
 
-        function calculateTaskPosition(startTime, endTime) {
-            // Parse time strings (HH:MM)
-            const [startHour, startMin] = startTime.split(':').map(Number);
-            const [endHour, endMin] = endTime.split(':').map(Number);
-            
-            // Calculate minutes from START_HOUR
-            const startMinutes = (startHour - START_HOUR) * 60 + startMin;
-            const endMinutes = (endHour - START_HOUR) * 60 + endMin;
-            const duration = endMinutes - startMinutes;
-            
-            // Convert to pixels
-            const pixelsPerMinute = HOUR_HEIGHT / 60;
-            const top = startMinutes * pixelsPerMinute;
-            const height = duration * pixelsPerMinute;
-            
-            return { top, height };
+        // Stats
+        function updateStats() {
+            const today = new Date().getDay();
+            const todayIndex = today === 0 ? 6 : today - 1;
+            const todayName = DAYS[todayIndex];
+
+            const todayPlans = plans.filter(p => p.day === todayName).length;
+            const weekPlans = plans.length;
+
+            document.getElementById('todayCount').textContent = todayPlans;
+            document.getElementById('weekCount').textContent = weekPlans;
         }
 
-        // Modal Management
+        // Quick Add
+        function quickAdd(day, hour) {
+            document.getElementById('planDay').value = day;
+            document.getElementById('planStart').value = `${hour.toString().padStart(2, '0')}:00`;
+            document.getElementById('planEnd').value = `${(hour + 1).toString().padStart(2, '0')}:00`;
+            openModal();
+            switchModalTab('plan');
+        }
+
+        // Modal Functions
         function openModal() {
             document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
             document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
             resetForms();
+        }
+
+        function closeModalOnBackdrop(e) {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
         }
 
         function switchModalTab(tab) {
             document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
-            
+
             if (tab === 'plan') {
                 document.querySelectorAll('.modal-tab')[0].classList.add('active');
                 document.getElementById('planForm').classList.add('active');
@@ -945,28 +1099,27 @@
             document.getElementById('planStart').value = '';
             document.getElementById('planEnd').value = '';
             document.getElementById('sleepDate').value = '';
-            document.getElementById('wakeupTime').value = '';
+            document.getElementById('wakeTime').value = '';
         }
 
         // Plan Management
-        function addPlan(event) {
-            event.preventDefault();
+        function addPlan(e) {
+            e.preventDefault();
             
             const day = document.getElementById('planDay').value;
             const title = document.getElementById('planTitle').value.trim();
             const startTime = document.getElementById('planStart').value;
             const endTime = document.getElementById('planEnd').value;
-            
-            // Validate times
+
             if (startTime >= endTime) {
                 alert('End time must be after start time');
                 return;
             }
-            
-            const plan = { day, title, startTime, endTime };
-            plans.push(plan);
+
+            plans.push({ day, title, startTime, endTime });
             saveData();
-            renderSchedule();
+            renderTimeline();
+            updateStats();
             closeModal();
         }
 
@@ -974,77 +1127,107 @@
             if (confirm('Delete this plan?')) {
                 plans.splice(index, 1);
                 saveData();
-                renderSchedule();
+                renderTimeline();
+                updateStats();
             }
         }
 
         // Sleep Logging
-        function logSleep(event) {
-            event.preventDefault();
+        function logSleep(e) {
+            e.preventDefault();
             
             const date = document.getElementById('sleepDate').value;
-            const wakeupTime = document.getElementById('wakeupTime').value;
-            
-            const log = { date, wakeupTime };
-            sleepLogs.push(log);
+            const wakeTime = document.getElementById('wakeTime').value;
+
+            sleepLogs.push({ date, wakeTime });
             saveData();
             closeModal();
-            
-            if (currentView === 'analytics') {
-                renderSleepChart();
-            }
+            renderSleepChart();
         }
 
-        // Sleep Chart
+        // Sleep Chart - FIXED: Dynamic Y-axis based on actual data
         function renderSleepChart() {
-            const ctx = document.getElementById('sleepChart');
-            if (!ctx) return;
-            
-            // Get last 7 logs
+            const statsArea = document.getElementById('sleepStatsArea');
+            const chartArea = document.getElementById('chartArea');
             const last7 = sleepLogs.slice(-7);
-            
+
             if (last7.length === 0) {
-                // Show empty state
+                statsArea.innerHTML = '';
+                chartArea.innerHTML = `
+                    <div class="no-data">
+                        <div class="no-data-icon">😴</div>
+                        <p>No sleep data yet.<br>Start logging your wake-up times!</p>
+                    </div>
+                `;
                 if (sleepChart) {
                     sleepChart.destroy();
                     sleepChart = null;
                 }
                 return;
             }
+
+            // Calculate stats
+            const times = last7.map(log => {
+                const [h, m] = log.wakeTime.split(':').map(Number);
+                return h + m / 60;
+            });
             
-            // Prepare data
+            const avgTime = times.reduce((a, b) => a + b, 0) / times.length;
+            const avgHours = Math.floor(avgTime);
+            const avgMinutes = Math.round((avgTime - avgHours) * 60);
+            
+            const earliest = Math.min(...times);
+            const earliestHours = Math.floor(earliest);
+            const earliestMinutes = Math.round((earliest - earliestHours) * 60);
+
+            // Show stats
+            statsArea.innerHTML = `
+                <div class="sleep-stats">
+                    <div class="sleep-stat">
+                        <div class="sleep-stat-label">Average</div>
+                        <div class="sleep-stat-value">${avgHours.toString().padStart(2, '0')}:${avgMinutes.toString().padStart(2, '0')}</div>
+                    </div>
+                    <div class="sleep-stat">
+                        <div class="sleep-stat-label">Earliest</div>
+                        <div class="sleep-stat-value">${earliestHours.toString().padStart(2, '0')}:${earliestMinutes.toString().padStart(2, '0')}</div>
+                    </div>
+                </div>
+            `;
+
+            chartArea.innerHTML = '<div class="chart-wrapper"><canvas id="sleepChart"></canvas></div>';
+
             const labels = last7.map(log => {
-                const date = new Date(log.date);
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const d = new Date(log.date);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             });
+
+            // Dynamic Y-axis range based on actual data
+            const minTime = Math.min(...times);
+            const maxTime = Math.max(...times);
+            const range = maxTime - minTime;
             
-            const data = last7.map(log => {
-                const [hours, minutes] = log.wakeupTime.split(':').map(Number);
-                return hours + minutes / 60; // Convert to decimal hours
-            });
-            
-            // Destroy existing chart
-            if (sleepChart) {
-                sleepChart.destroy();
-            }
-            
-            // Create new chart
+            // Add padding (1 hour above and below)
+            const yMin = Math.max(0, Math.floor(minTime) - 1);
+            const yMax = Math.min(24, Math.ceil(maxTime) + 1);
+
+            if (sleepChart) sleepChart.destroy();
+
+            const ctx = document.getElementById('sleepChart');
             sleepChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Wake-up Time',
-                        data: data,
-                        borderColor: '#00ffd5',
-                        backgroundColor: 'rgba(0, 255, 213, 0.1)',
+                        data: times,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
                         borderWidth: 3,
-                        pointBackgroundColor: '#00ffd5',
-                        pointBorderColor: '#0d0d0f',
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: 'white',
                         pointBorderWidth: 2,
                         pointRadius: 6,
-                        pointHoverRadius: 8,
-                        tension: 0.4,
+                        tension: 0.3,
                         fill: true
                     }]
                 },
@@ -1052,49 +1235,36 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
-                            backgroundColor: 'rgba(22, 22, 26, 0.95)',
-                            titleColor: '#00ffd5',
-                            bodyColor: '#ffffff',
-                            borderColor: '#00ffd5',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: false,
                             callbacks: {
-                                label: function(context) {
-                                    const value = context.parsed.y;
-                                    const hours = Math.floor(value);
-                                    const minutes = Math.round((value - hours) * 60);
-                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                label: function(ctx) {
+                                    const val = ctx.parsed.y;
+                                    const h = Math.floor(val);
+                                    const m = Math.round((val - h) * 60);
+                                    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
                                 }
                             }
                         }
                     },
                     scales: {
                         y: {
-                            min: 5,
-                            max: 12,
+                            min: yMin,
+                            max: yMax,
                             ticks: {
-                                color: '#b4b4b4',
-                                callback: function(value) {
-                                    return `${value}:00`;
-                                }
+                                callback: v => `${v}:00`,
+                                font: { size: 11 }
                             },
                             grid: {
-                                color: 'rgba(0, 255, 213, 0.1)',
-                                drawBorder: false
+                                color: '#f0f0f0'
                             }
                         },
                         x: {
                             ticks: {
-                                color: '#b4b4b4'
+                                font: { size: 11 }
                             },
                             grid: {
-                                color: 'rgba(0, 255, 213, 0.05)',
-                                drawBorder: false
+                                color: '#f7f7f7'
                             }
                         }
                     }
@@ -1103,18 +1273,23 @@
         }
 
         // Keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
         });
 
-        // Enter key on login
-        document.getElementById('usernameInput')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                login();
-            }
+        document.getElementById('username')?.addEventListener('keypress', e => {
+            if (e.key === 'Enter') login();
         });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
     </script>
 </body>
 </html>
