@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>ORDO - Your Mindful Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            /* Light Theme */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            
+            --accent: #06b6d4;
+            --accent-light: #22d3ee;
+            
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+            
+            --gradient-bg: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            --gradient-login: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            
+            --primary: #818cf8;
+            --primary-light: #a5b4fc;
+            --primary-dark: #6366f1;
+            
+            --accent: #22d3ee;
+            --accent-light: #67e8f9;
+            
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            
+            --border: #334155;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
+            
+            --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --gradient-login: linear-gradient(135deg, #4c1d95 0%, #5b21b6 50%, #7c3aed 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Theme Switcher */
+        .theme-switcher {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border);
+        }
+
+        .theme-switcher-toggle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] .theme-switcher-toggle {
+            left: 30px;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: var(--gradient-login);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-screen::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-30px, -30px) rotate(10deg); }
+        }
+
+        .login-card {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            padding: 48px 32px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 420px;
+            z-index: 1;
+            animation: slideIn 0.6s ease-out;
+            position: relative;
+        }
+
+        .login-theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-logo p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            background: var(--bg-primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            touch-action: manipulation;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* App Container */
+        .app {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        .app.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            backdrop-filter: blur(20px);
+            padding: 20px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .btn-logout:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 24px;
+            margin-top: 16px;
+            margin-bottom: 24px;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 14px 20px;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            touch-action: manipulation;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-tab:hover {
+            border-color: var(--border);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Content */
+        .content {
+            display: none;
+            padding: 0 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Day Selector */
+        .day-selector {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .day-selector::-webkit-scrollbar {
+            display: none;
+        }
+
+        .day-chip {
+            min-width: 90px;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            touch-action: manipulation;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .day-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .day-chip.today {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .day-chip.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+        /* Timeline */
+        .timeline-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-item:hover {
+            background: var(--bg-tertiary);
+            margin: 0 -16px;
+            padding: 20px 16px;
+            border-radius: var(--radius-md);
+        }
+
+        .time-label {
+            min-width: 70px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-top: 2px;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .empty-slot {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-style: italic;
+            padding: 8px 0;
+        }
+
+        /* Task Card */
+        .task-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            color: white;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .task-card:hover::before {
+            opacity: 1;
+        }
+
+        .task-card:active {
+            transform: scale(0.98);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .task-delete-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .task-delete-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .task-time {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .task-duration {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+
+        .task-continuation {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--primary);
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Sleep Section */
+        .sleep-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .sleep-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .sleep-stat-card {
+            background: var(--bg-secondary);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .sleep-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sleep-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .sleep-stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chart-card {
+            background: var(--bg-secondary);
+            padding: 32px 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+        }
+
+        .chart-wrapper {
+            height: 300px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 80px 24px;
+        }
+
+        .no-data-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .no-data-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 32px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: var(--radius-xl);
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .fab:hover {
+            transform: scale(1.05) rotate(90deg);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.45);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: flex-end;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            padding: 32px 24px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s ease;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: var(--bg-tertiary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .modal-tab {
+            flex: 1;
+            padding: 14px;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .modal-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            background: var(--bg-primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            margin-top: 8px;
+            touch-action: manipulation;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Sync Status */
+        .sync-toast {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 99;
+            border: 1px solid var(--border);
+        }
+
+        .sync-toast.show {
+            display: flex;
+            animation: toastIn 0.4s ease;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .sync-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .sync-text {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Safe areas for notched phones */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .header {
+                padding-top: calc(20px + env(safe-area-inset-top));
+            }
+            
+            .app {
+                padding-bottom: calc(100px + env(safe-area-inset-bottom));
+            }
+            
+            .fab {
+                bottom: calc(32px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .modal-content {
+                border-radius: var(--radius-xl);
+                margin: auto;
+                max-width: 600px;
+                max-height: 90vh;
+            }
+            
+            .modal {
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-theme-toggle">
+                <div class="theme-switcher" onclick="toggleTheme()">
+                    <div class="theme-switcher-toggle">
+                        <span id="themeIcon">☀️</span>
+                    </div>
+                </div>
+            </div>
+            <div class="login-logo">
+                <h1>ORDO</h1>
+                <p>Your mindful planner</p>
+            </div>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter your username" autocomplete="off">
+            </div>
+            <button class="btn-primary" onclick="login()">Get Started</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="header-top">
+                    <div class="header-left">
+                        <div class="logo">ORDO</div>
+                        <div class="theme-switcher" onclick="toggleTheme()">
+                            <div class="theme-switcher-toggle">
+                                <span id="themeIconApp">☀️</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-logout" onclick="logout()">Logout</button>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <span id="displayUser"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('schedule')">Schedule</div>
+            <div class="nav-tab" onclick="switchTab('sleep')">Sleep</div>
+        </div>
+
+        <!-- Schedule View -->
+        <div id="scheduleContent" class="content active">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="todayCount">0</div>
+                    <div class="stat-label">Today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekCount">0</div>
+                    <div class="stat-label">This Week</div>
+                </div>
+            </div>
+
+            <!-- Day Selector -->
+            <div class="day-selector" id="daySelector"></div>
+
+            <!-- Timeline -->
+            <div class="timeline-container" id="timeline"></div>
+        </div>
+
+        <!-- Sleep View -->
+        <div id="sleepContent" class="content">
+            <div class="sleep-container">
+                <div id="sleepStatsArea"></div>
+                <div class="chart-card">
+                    <div class="chart-title">Wake-up Pattern</div>
+                    <div id="chartArea"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAB -->
+        <button class="fab" onclick="openModal()">+</button>
+
+        <!-- Sync Toast -->
+        <div id="syncToast" class="sync-toast">
+            <div class="sync-icon"></div>
+            <span class="sync-text">Saved successfully</span>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal" onclick="closeModalOnBackdrop(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+
+            <div class="modal-tabs">
+                <button class="modal-tab active" onclick="switchModalTab('plan')">Plan</button>
+                <button class="modal-tab" onclick="switchModalTab('sleep')">Sleep</button>
+            </div>
+
+            <!-- Plan Form -->
+            <div id="planForm" class="form-section active">
+                <form onsubmit="addPlan(event)">
+                    <div class="form-group">
+                        <label class="form-label">Day</label>
+                        <select id="planDay" class="form-select" required>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" id="planTitle" class="form-input" placeholder="What's the plan?" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Start</label>
+                            <input type="time" id="planStart" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End</label>
+                            <input type="time" id="planEnd" class="form-input" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Add Plan</button>
+                </form>
+            </div>
+
+            <!-- Sleep Form -->
+            <div id="sleepForm" class="form-section">
+                <form onsubmit="logSleep(event)">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" id="sleepDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Wake-up Time</label>
+                        <input type="time" id="wakeTime" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Log Sleep</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let plans = [];
+        let sleepLogs = [];
+        let sleepChart = null;
+        let selectedDay = '';
+        const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const HOURS = Array.from({length: 17}, (_, i) => i + 7);
+
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('ordoTheme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('ordoTheme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            // Recreate chart with new colors if it exists
+            if (sleepChart && document.getElementById('sleepContent').classList.contains('active')) {
+                renderSleepChart();
+            }
+        }
+
+        function updateThemeIcon(theme) {
+            const icon = theme === 'dark' ? '🌙' : '☀️';
+            const themeIcon = document.getElementById('themeIcon');
+            const themeIconApp = document.getElementById('themeIconApp');
+            if (themeIcon) themeIcon.textContent = icon;
+            if (themeIconApp) themeIconApp.textContent = icon;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            checkLogin();
+            setTodayAsDefault();
+        });
+
+        function setTodayAsDefault() {
+            const today = new Date().getDay();
+            const todayIndex = today === 0 ? 6 : today - 1;
+            selectedDay = DAYS[todayIndex];
+        }
+
+        function checkLogin() {
+            const saved = localStorage.getItem('ordoUser');
+            if (saved) {
+                currentUser = saved;
+                showApp();
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            if (username) {
+                currentUser = username;
+                localStorage.setItem('ordoUser', username);
+                plans = [];
+                sleepLogs = [];
+                showApp();
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                plans = [];
+                sleepLogs = [];
+                localStorage.removeItem('ordoUser');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('app').classList.remove('active');
+            }
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('app').classList.add('active');
+            document.getElementById('displayUser').textContent = currentUser;
+            document.getElementById('userAvatar').textContent = currentUser.charAt(0).toUpperCase();
+            loadData();
+            buildDaySelector();
+            renderTimeline();
+            updateStats();
+        }
+
+        function loadData() {
+            const key = `ordo_${currentUser}_data`;
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    plans = data.plans || [];
+                    sleepLogs = data.sleepLogs || [];
+                } catch (e) {
+                    plans = [];
+                    sleepLogs = [];
+                }
+            }
+        }
+
+        function saveData() {
+            const key = `ordo_${currentUser}_data`;
+            localStorage.setItem(key, JSON.stringify({ plans, sleepLogs }));
+            showSync();
+        }
+
+        function showSync() {
+            const toast = document.getElementById('syncToast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+
+            if (tab === 'schedule') {
+                document.querySelectorAll('.nav-tab')[0].classList.add('active');
+                document.getElementById('scheduleContent').classList.add('active');
+            } else {
+                document.querySelectorAll('.nav-tab')[1].classList.add('active');
+                document.getElementById('sleepContent').classList.add('active');
+                renderSleepChart();
+            }
+        }
+
+        function buildDaySelector() {
+            const selector = document.getElementById('daySelector');
+            selector.innerHTML = '';
+
+            const today = new Date().getDay();
+            const todayIndex = today === 0 ? 6 : today - 1;
+
+            DAYS.forEach((day, index) => {
+                const chip = document.createElement('div');
+                chip.className = 'day-chip';
+                if (day === selectedDay) chip.classList.add('active');
+                if (index === todayIndex) chip.classList.add('today');
+                chip.textContent = day.substring(0, 3);
+                chip.onclick = () => selectDay(day);
+                selector.appendChild(chip);
+            });
+        }
+
+        function selectDay(day) {
+            selectedDay = day;
+            buildDaySelector();
+            renderTimeline();
+        }
+
+        function renderTimeline() {
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = '';
+
+            const dayPlans = plans.filter(p => p.day === selectedDay);
+
+            HOURS.forEach(hour => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+
+                const label = document.createElement('div');
+                label.className = 'time-label';
+                label.textContent = `${hour.toString().padStart(2, '0')}:00`;
+
+                const content = document.createElement('div');
+                content.className = 'timeline-content';
+
+                const startingPlans = dayPlans.filter(p => parseInt(p.startTime.split(':')[0]) === hour);
+                const ongoingPlan = dayPlans.find(p => {
+                    const startHour = parseInt(p.startTime.split(':')[0]);
+                    const endHour = parseInt(p.endTime.split(':')[0]);
+                    const endMin = parseInt(p.endTime.split(':')[1]);
+                    return startHour < hour && (endHour > hour || (endHour === hour && endMin > 0));
+                });
+
+                if (startingPlans.length > 0) {
+                    startingPlans.forEach(plan => {
+                        const card = createTaskCard(plan);
+                        content.appendChild(card);
+                    });
+                } else if (ongoingPlan) {
+                    const cont = document.createElement('div');
+                    cont.className = 'task-continuation';
+                    cont.textContent = `↑ ${ongoingPlan.title} continues`;
+                    content.appendChild(cont);
+                } else {
+                    const empty = document.createElement('div');
+                    empty.className = 'empty-slot';
+                    empty.textContent = 'Free time';
+                    content.appendChild(empty);
+                    item.onclick = () => quickAdd(selectedDay, hour);
+                    item.style.cursor = 'pointer';
+                }
+
+                item.appendChild(label);
+                item.appendChild(content);
+                timeline.appendChild(item);
+            });
+        }
+
+        function createTaskCard(plan) {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+
+            const header = document.createElement('div');
+            header.className = 'task-header';
+
+            const title = document.createElement('div');
+            title.className = 'task-title';
+            title.textContent = plan.title;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'task-delete-btn';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                deletePlan(plans.indexOf(plan));
+            };
+
+            header.appendChild(title);
+            header.appendChild(deleteBtn);
+
+            const time = document.createElement('div');
+            time.className = 'task-time';
+            time.textContent = `${plan.startTime} - ${plan.endTime}`;
+
+            const [startH, startM] = plan.startTime.split(':').map(Number);
+            const [endH, endM] = plan.endTime.split(':').map(Number);
+            const durationMinutes = (endH * 60 + endM) - (startH * 60 + startM);
+            const hours = Math.floor(durationMinutes / 60);
+            const minutes = durationMinutes % 60;
+
+            const duration = document.createElement('div');
+            duration.className = 'task-duration';
+            if (hours > 0 && minutes > 0) {
+                duration.textContent = `${hours}h ${minutes}m`;
+            } else if (hours > 0) {
+                duration.textContent = `${hours} hour${hours > 1 ? 's' : ''}`;
+            } else {
+                duration.textContent = `${minutes} minutes`;
+            }
+
+            card.appendChild(header);
+            card.appendChild(time);
+            card.appendChild(duration);
+
+            return card;
+        }
+
+        function updateStats() {
+            const today = new Date().getDay();
+            const todayIndex = today === 0 ? 6 : today - 1;
+            const todayName = DAYS[todayIndex];
+
+            document.getElementById('todayCount').textContent = plans.filter(p => p.day === todayName).length;
+            document.getElementById('weekCount').textContent = plans.length;
+        }
+
+        function quickAdd(day, hour) {
+            document.getElementById('planDay').value = day;
+            document.getElementById('planStart').value = `${hour.toString().padStart(2, '0')}:00`;
+            document.getElementById('planEnd').value = `${(hour + 1).toString().padStart(2, '0')}:00`;
+            openModal();
+            switchModalTab('plan');
+        }
+
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
+            resetForms();
+        }
+
+        function closeModalOnBackdrop(e) {
+            if (e.target.id === 'modal') closeModal();
+        }
+
+        function switchModalTab(tab) {
+            document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+
+            if (tab === 'plan') {
+                document.querySelectorAll('.modal-tab')[0].classList.add('active');
+                document.getElementById('planForm').classList.add('active');
+            } else {
+                document.querySelectorAll('.modal-tab')[1].classList.add('active');
+                document.getElementById('sleepForm').classList.add('active');
+            }
+        }
+
+        function resetForms() {
+            document.getElementById('planTitle').value = '';
+            document.getElementById('planStart').value = '';
+            document.getElementById('planEnd').value = '';
+            document.getElementById('sleepDate').value = '';
+            document.getElementById('wakeTime').value = '';
+        }
+
+        function addPlan(e) {
+            e.preventDefault();
+            const day = document.getElementById('planDay').value;
+            const title = document.getElementById('planTitle').value.trim();
+            const startTime = document.getElementById('planStart').value;
+            const endTime = document.getElementById('planEnd').value;
+
+            if (startTime >= endTime) {
+                alert('End time must be after start time');
+                return;
+            }
+
+            plans.push({ day, title, startTime, endTime });
+            saveData();
+            renderTimeline();
+            updateStats();
+            closeModal();
+        }
+
+        function deletePlan(index) {
+            if (confirm('Delete this plan?')) {
+                plans.splice(index, 1);
+                saveData();
+                renderTimeline();
+                updateStats();
+            }
+        }
+
+        function logSleep(e) {
+            e.preventDefault();
+            const date = document.getElementById('sleepDate').value;
+            const wakeTime = document.getElementById('wakeTime').value;
+
+            sleepLogs.push({ date, wakeTime });
+            saveData();
+            closeModal();
+            renderSleepChart();
+        }
+
+        function renderSleepChart() {
+            const statsArea = document.getElementById('sleepStatsArea');
+            const chartArea = document.getElementById('chartArea');
+            const last7 = sleepLogs.slice(-7);
+
+            if (last7.length === 0) {
+                statsArea.innerHTML = '';
+                chartArea.innerHTML = `
+                    <div class="no-data">
+                        <div class="no-data-icon">🌙</div>
+                        <p class="no-data-text">No sleep data yet.<br>Start tracking your wake-up times.</p>
+                    </div>
+                `;
+                if (sleepChart) {
+                    sleepChart.destroy();
+                    sleepChart = null;
+                }
+                return;
+            }
+
+            const times = last7.map(log => {
+                const [h, m] = log.wakeTime.split(':').map(Number);
+                return h + m / 60;
+            });
+
+            const avgTime = times.reduce((a, b) => a + b, 0) / times.length;
+            const avgHours = Math.floor(avgTime);
+            const avgMinutes = Math.round((avgTime - avgHours) * 60);
+
+            const earliest = Math.min(...times);
+            const earliestHours = Math.floor(earliest);
+            const earliestMinutes = Math.round((earliest - earliestHours) * 60);
+
+            statsArea.innerHTML = `
+                <div class="sleep-stats">
+                    <div class="sleep-stat-card">
+                        <div class="sleep-stat-label">Average</div>
+                        <div class="sleep-stat-value">${avgHours.toString().padStart(2, '0')}:${avgMinutes.toString().padStart(2, '0')}</div>
+                    </div>
+                    <div class="sleep-stat-card">
+                        <div class="sleep-stat-label">Earliest</div>
+                        <div class="sleep-stat-value">${earliestHours.toString().padStart(2, '0')}:${earliestMinutes.toString().padStart(2, '0')}</div>
+                    </div>
+                </div>
+            `;
+
+            chartArea.innerHTML = '<div class="chart-wrapper"><canvas id="sleepChart"></canvas></div>';
+
+            const labels = last7.map(log => {
+                const d = new Date(log.date);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+
+            const minTime = Math.min(...times);
+            const maxTime = Math.max(...times);
+            const yMin = Math.max(0, Math.floor(minTime) - 1);
+            const yMax = Math.min(24, Math.ceil(maxTime) + 1);
+
+            // Get theme-aware colors
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const gridColor = isDark ? '#334155' : '#f1f5f9';
+            const tickColor = isDark ? '#cbd5e1' : '#64748b';
+
+            if (sleepChart) sleepChart.destroy();
+
+            const ctx = document.getElementById('sleepChart');
+            sleepChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Wake-up Time',
+                        data: times,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                            titleColor: isDark ? '#f1f5f9' : '#1e293b',
+                            bodyColor: isDark ? '#cbd5e1' : '#64748b',
+                            borderColor: isDark ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(ctx) {
+                                    const val = ctx.parsed.y;
+                                    const h = Math.floor(val);
+                                    const m = Math.round((val - h) * 60);
+                                    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: yMin,
+                            max: yMax,
+                            ticks: {
+                                callback: v => `${v}:00`,
+                                color: tickColor,
+                                font: { size: 11 }
+                            },
+                            grid: { color: gridColor }
+                        },
+                        x: {
+                            ticks: {
+                                color: tickColor,
+                                font: { size: 11 }
+                            },
+                            grid: { color: gridColor }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        document.getElementById('username')?.addEventListener('keypress', e => {
+            if (e.key === 'Enter') login();
+        });
+    </script>
+</body>
+</html>
