@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discrete Structures — 14-Day Study Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --border: #2a2a3d;
+    --accent: #7c6af7;
+    --accent2: #f7c66a;
+    --accent3: #6af7c6;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --done: #2d3a2d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .hero {
+    max-width: 860px;
+    margin: 0 auto 3rem;
+    text-align: center;
+    padding: 3rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: linear-gradient(135deg, #12121a 0%, #1a1228 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 60% 0%, rgba(124,106,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(124,106,247,0.15);
+    border: 1px solid rgba(124,106,247,0.4);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.8rem;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .legend {
+    max-width: 860px;
+    margin: 0 auto 2rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; }
+
+  .week-header {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 2.5rem 0 1rem;
+    padding-left: 4px;
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+  }
+
+  .day-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .day-card:hover { border-color: var(--accent); }
+  .day-card.done { opacity: 0.5; border-color: var(--done); }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .day-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: rgba(124,106,247,0.1);
+    border: 1px solid rgba(124,106,247,0.3);
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    min-width: 52px;
+    text-align: center;
+  }
+
+  .day-title { font-size: 1rem; font-weight: 600; flex: 1; }
+
+  .topics-row {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.3rem;
+  }
+
+  .topic-chip {
+    font-size: 0.68rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: 400;
+  }
+
+  .chip-theory { background: rgba(124,106,247,0.12); color: #a89ef7; border: 1px solid rgba(124,106,247,0.25); }
+  .chip-practice { background: rgba(247,198,106,0.12); color: #f7c66a; border: 1px solid rgba(247,198,106,0.25); }
+  .chip-review { background: rgba(106,247,198,0.12); color: #6af7c6; border: 1px solid rgba(106,247,198,0.25); }
+  .chip-exam { background: rgba(247,106,106,0.12); color: #f79e9e; border: 1px solid rgba(247,106,106,0.25); }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+  }
+
+  .day-card.open .chevron { transform: rotate(180deg); }
+
+  .day-body {
+    display: none;
+    padding: 0 1.2rem 1.2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .day-card.open .day-body { display: block; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 1rem 0 0.5rem;
+  }
+
+  .goals-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .goals-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .goals-list li::before {
+    content: '→';
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .prompt-box {
+    background: #0d0d18;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: #c8c8e8;
+    white-space: pre-wrap;
+    word-break: break-word;
+    position: relative;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: rgba(124,106,247,0.2);
+    border: 1px solid rgba(124,106,247,0.4);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .copy-btn:hover { background: rgba(124,106,247,0.4); }
+  .copy-btn.copied { color: var(--accent3); border-color: var(--accent3); }
+
+  .pages-ref {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  .pages-ref span { color: var(--accent2); }
+
+  .check-btn {
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .check-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-top: 3rem;
+    font-family: 'Space Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">KBTU · Discrete Structures · 2025–2026</div>
+  <h1>14-Day <span>Final Exam</span><br>Prep Plan</h1>
+  <p class="subtitle">Kalmurzayev B.S. · Based on lecture slides + Zero Variant</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">14</div><div class="stat-label">Days</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">Big Topics</div></div>
+    <div class="stat"><div class="stat-num">40</div><div class="stat-label">Exam Points</div></div>
+    <div class="stat"><div class="stat-num">461</div><div class="stat-label">Lecture Pages</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#a89ef7"></div> Theory</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f7c66a"></div> Practice</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#6af7c6"></div> Review</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f79e9e"></div> Mock Exam</div>
+  </div>
+
+  <!-- WEEK 1 -->
+  <div class="week-header">Week 1 — Core Theory</div>
+
+  <!-- Day 1 -->
+  <div class="day-card" id="day1">
+    <div class="day-header" onclick="toggle('day1')">
+      <div class="day-num">DAY 01</div>
+      <div>
+        <div class="day-title">Proof by Mathematical Induction</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q1 — 5pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Понять структуру доказательства по индукции (база, шаг, вывод)</li>
+        <li>Научиться доказывать суммарные формулы (∑k, ∑k², ∑k³, ∑k⁵)</li>
+        <li>Решить 3+ задачи на индукцию самостоятельно</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~310–340</span> (Proof by Induction section)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt1">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Доказательство по математической индукции
+
+1. Объясни по-русски структуру доказательства по математической индукции (база, индукционный шаг, вывод). Приведи краткую формулу-шаблон.
+
+2. Покажи полное решение задачи из нулевого варианта:
+   Доказать: ∀n ≥ 1: ∑(k=1 to n) k⁵ = (2n²+2n−1)(n+1)²n² / 12
+
+3. Дай мне 3 задачи на индукцию нарастающей сложности (в стиле экзамена KBTU), а потом проверь мои решения.
+
+Теорию объясняй на русском, задачи и решения пиши на английском.<div class="copy-btn" onclick="copyPrompt('prompt1', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day1')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="day-card" id="day2">
+    <div class="day-header" onclick="toggle('day2')">
+      <div class="day-num">DAY 02</div>
+      <div>
+        <div class="day-title">Combinatorics: Counting & Stars-and-Bars</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q2 — 5pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Выучить формулы: Permutations, Combinations, Stars-and-Bars</li>
+        <li>Решить задачу x₁+x₂+x₃+x₄=20 (non-negative integers)</li>
+        <li>Научиться применять Inclusion-Exclusion Principle</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~90–150</span> (Combinatorics section)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt2">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Комбинаторика — Counting, Permutations, Combinations, Stars-and-Bars
+
+1. Объясни по-русски следующие формулы с примерами:
+   - Permutation P(n,r) и Combination C(n,r)
+   - Stars-and-Bars (метод звёзд и перегородок) — когда применяется, формула
+   - Inclusion-Exclusion Principle
+
+2. Покажи полное решение задачи из нулевого варианта:
+   How many solutions does x₁+x₂+x₃+x₄=20 have if x₁,x₂,x₃,x₄ are non-negative integers?
+
+3. Дай 3 задачи в стиле экзамена KBTU на эти темы (с ограничениями типа xᵢ ≥ 2 и т.п.), затем проверь мои решения.
+
+Теорию объясняй на русском, задачи и решения — на английском.<div class="copy-btn" onclick="copyPrompt('prompt2', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day2')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="day-card" id="day3">
+    <div class="day-header" onclick="toggle('day3')">
+      <div class="day-num">DAY 03</div>
+      <div>
+        <div class="day-title">Recurrence Relations</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q3 — 5pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Решать линейные рекуррентности с постоянными коэффициентами</li>
+        <li>Уметь работать с чётными/нечётными подпоследовательностями (aₙ = aₙ₋₂)</li>
+        <li>Решить задачу из нулевого варианта: aₙ = aₙ₋₂/4</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~160–210</span> (Recurrences & Generating Functions)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt3">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Рекуррентные соотношения (Recurrence Relations)
+
+1. Объясни по-русски:
+   - Что такое рекуррентное соотношение и как его решать
+   - Метод характеристического уравнения для линейных рекуррентностей
+   - Как обрабатывать рекуррентности вида aₙ = f(aₙ₋₂) (separate even/odd subsequences)
+
+2. Покажи полное решение задачи из нулевого варианта:
+   Solve: aₙ = aₙ₋₂/4, n ≥ 2, a₀ = 1, a₁ = 0
+
+3. Дай 3 задачи в стиле экзамена KBTU на рекуррентные соотношения (включая одну с нечётными/чётными подпоследовательностями), затем проверь мои решения.
+
+Теорию объясняй на русском, задачи и решения — на английском.<div class="copy-btn" onclick="copyPrompt('prompt3', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day3')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="day-card" id="day4">
+    <div class="day-header" onclick="toggle('day4')">
+      <div class="day-num">DAY 04</div>
+      <div>
+        <div class="day-title">Number Theory & Chinese Remainder Theorem</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q4 — 5pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Понять модульную арифметику и линейные сравнения ax ≡ b (mod n)</li>
+        <li>Выучить алгоритм CRT — конструктивное доказательство + алгоритм</li>
+        <li>Решить систему из 3 уравнений (задача нулевого варианта)</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~240–280</span> (Number Theory / Congruences)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt4">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Теория чисел — Congruences и Chinese Remainder Theorem (CRT)
+
+1. Объясни по-русски:
+   - Модульная арифметика: основные свойства, обратный элемент (modular inverse)
+   - Алгоритм решения линейного сравнения ax ≡ b (mod n)
+   - Chinese Remainder Theorem: условия применения (попарно взаимно простые модули) и пошаговый алгоритм
+
+2. Покажи полное пошаговое решение системы из нулевого варианта:
+   5x ≡ 8 (mod 13)
+   5x ≡ 5 (mod 16)
+   3x ≡ 3 (mod 25)
+   (Внимание: сначала нужно привести к виду x ≡ a (mod m))
+
+3. Дай 2 задачи на CRT в стиле экзамена KBTU, затем проверь мои решения.
+
+Теорию объясняй на русском, задачи и решения — на английском.<div class="copy-btn" onclick="copyPrompt('prompt4', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day4')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="day-card" id="day5">
+    <div class="day-header" onclick="toggle('day5')">
+      <div class="day-num">DAY 05</div>
+      <div>
+        <div class="day-title">Boolean Functions: Truth Table, DNF, CNF</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q5a,b — 6pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Освоить операторы: NOR (↓), XNOR (~), NOT, AND, OR, NAND</li>
+        <li>Построить таблицу истинности для составных функций</li>
+        <li>Получить DNF и CNF через эквивалентные преобразования</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: ~Boolean Logic section (Propositional Logic)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt5">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Boolean Functions — Truth Tables, DNF, CNF (часть 1)
+
+1. Объясни по-русски все логические операторы из курса:
+   - Основные: NOT, AND, OR, XOR
+   - NOR (↓ стрелка Пирса), NAND (штрих Шеффера)
+   - XNOR (эквивалентность ~), импликация →
+   Для каждого: формула, таблица истинности, приоритет.
+
+2. Покажи полное построение таблицы истинности для функции из нулевого варианта:
+   f(x,y,z) = x ↓ ((y ~ z) ↓ x)
+   Покажи промежуточные столбцы!
+
+3. Покажи как получить DNF и CNF из таблицы истинности через эквивалентные преобразования (шаги).
+
+4. Дай мне новую булеву функцию в стиле экзамена и попроси построить таблицу + DNF/CNF. Затем проверь меня.
+
+Теорию объясняй на русском, задачи и решения — на английском.<div class="copy-btn" onclick="copyPrompt('prompt5', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day5')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="week-header">Week 2 — Hard Topics + Practice</div>
+
+  <!-- Day 6 -->
+  <div class="day-card" id="day6">
+    <div class="day-header" onclick="toggle('day6')">
+      <div class="day-num">DAY 06</div>
+      <div>
+        <div class="day-title">Boolean Functions: PDNF, PCNF & Zhegalkin (ANF)</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q5c,d — 4pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Найти PDNF (Perfect DNF) и PCNF (Perfect CNF) из таблицы истинности</li>
+        <li>Построить полином Жегалкина (ANF) методом треугольника Паскаля</li>
+        <li>Решить полностью задачу Q5 из нулевого варианта</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: ~Boolean / ANF section</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt6">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Boolean Functions — PDNF, PCNF и Полином Жегалкина (ANF) (часть 2)
+
+1. Объясни по-русски:
+   - PDNF (Perfect/Principal DNF) vs DNF — в чём разница, как строить из таблицы
+   - PCNF (Perfect/Principal CNF) vs CNF — аналогично
+   - Полином Жегалкина (ANF): что это, как строить методом неопределённых коэффициентов или треугольником Паскаля
+
+2. Покажи полное решение задачи Q5 из нулевого варианта для f(x,y,z) = x ↓ ((y ~ z) ↓ x):
+   (c) Найди PDNF и PCNF
+   (d) Найди полином Жегалкина (ANF)
+
+3. Дай мне новую булеву функцию и попроси найти PDNF, PCNF и ANF. Затем проверь решение.
+
+Теорию объясняй на русском, задачи и решения — на английском.<div class="copy-btn" onclick="copyPrompt('prompt6', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day6')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 7 -->
+  <div class="day-card" id="day7">
+    <div class="day-header" onclick="toggle('day7')">
+      <div class="day-num">DAY 07</div>
+      <div>
+        <div class="day-title">Regular Languages & Regular Expressions</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q6a — 3pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Понять регулярные операции: конкатенация, объединение, звезда Клини</li>
+        <li>Составлять regex для заданных языков</li>
+        <li>Написать регулярное выражение для L из нулевого варианта</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~390–420</span> (Regular Languages)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt7">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Регулярные языки и Регулярные выражения (Regular Languages & Regex)
+
+1. Объясни по-русски:
+   - Что такое регулярный язык и регулярное выражение (синтаксис: ∪, ·, *)
+   - Как читать нотацию: (0+1)*, 01*, и т.д.
+   - Как строить regex для языков с несколькими ограничениями одновременно
+
+2. Покажи решение задачи Q6a из нулевого варианта:
+   L = {ω ∈ {0,1}* : ω начинается с 011 И #₀(ω) чётно}
+   Найди регулярное выражение r_L.
+   Объясни логику построения шаг за шагом.
+
+3. Дай 3 похожих языка и попроси написать regex. Затем проверь мои решения.
+
+Теорию объясняй на русском, задачи и решения — на английском.<div class="copy-btn" onclick="copyPrompt('prompt7', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day7')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 8 -->
+  <div class="day-card" id="day8">
+    <div class="day-header" onclick="toggle('day8')">
+      <div class="day-num">DAY 08</div>
+      <div>
+        <div class="day-title">NFA — Nondeterministic Finite Automata</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q6b — 2pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Понять разницу NFA vs DFA (недетерминизм, ε-переходы)</li>
+        <li>Строить NFA для заданного языка</li>
+        <li>Решить задачу Q6b: NFA для L из нулевого варианта</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~380–410</span> (Automata Theory)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt8">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: NFA — Недетерминированные конечные автоматы
+
+1. Объясни по-русски:
+   - Формальное определение NFA: (Q, Σ, δ, q₀, F) — что такое каждый компонент
+   - Чем NFA отличается от DFA (multiple transitions, ε-transitions)
+   - Как NFA принимает строку (существование хотя бы одного принимающего пути)
+   - Стратегия построения NFA для языков с несколькими свойствами
+
+2. Покажи построение NFA для задачи Q6b из нулевого варианта:
+   L = {ω ∈ {0,1}* : ω начинается с 011 И #₀(ω) чётно}
+   Нарисуй таблицу переходов и опиши состояния словами.
+
+3. Дай 2 языка и попроси построить NFA (таблицу переходов). Затем проверь.
+
+Теорию объясняй на русском, задачи и решения — на английском.<div class="copy-btn" onclick="copyPrompt('prompt8', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day8')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 9 -->
+  <div class="day-card" id="day9">
+    <div class="day-header" onclick="toggle('day9')">
+      <div class="day-num">DAY 09</div>
+      <div>
+        <div class="day-title">DFA — Deterministic Finite Automata</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-practice">Practice</span>
+          <span class="topic-chip chip-exam">Exam Q6c — 5pts</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Строить DFA напрямую или через subset construction из NFA</li>
+        <li>Работать с "мёртвыми" состояниями (dead/trap states)</li>
+        <li>Решить задачу Q6c (самая дорогая — 5 баллов!)</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~400–430</span> (DFA, NFA-to-DFA)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt9">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: DFA — Детерминированные конечные автоматы (самая дорогая часть — 5 баллов!)
+
+1. Объясни по-русски:
+   - Формальное определение DFA: (Q, Σ, δ, q₀, F)
+   - Как строить DFA напрямую (продумывая состояния как "память" автомата)
+   - Subset construction: алгоритм перевода NFA → DFA пошагово
+   - Dead/trap state: когда нужен и как добавлять
+
+2. Покажи полное построение DFA для задачи Q6c из нулевого варианта:
+   L = {ω ∈ {0,1}* : ω начинается с 011 И #₀(ω) чётно}
+   Покажи: (a) анализ нужных состояний, (b) таблицу переходов, (c) описание каждого состояния.
+
+3. Дай 2 задачи на построение DFA в стиле экзамена KBTU. Затем проверь решения.
+
+Теорию объясняй на русском, задачи и решения — на английском.<div class="copy-btn" onclick="copyPrompt('prompt9', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day9')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 10 -->
+  <div class="day-card" id="day10">
+    <div class="day-header" onclick="toggle('day10')">
+      <div class="day-num">DAY 10</div>
+      <div>
+        <div class="day-title">Predicate Logic & Graph Theory Basics</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-theory">Theory</span>
+          <span class="topic-chip chip-review">Review</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Понять кванторы ∀, ∃ и их отрицания</li>
+        <li>Формализовать утверждения на языке предикатной логики</li>
+        <li>Повторить основные понятия теории графов (могут быть на экзамене)</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~295–355</span> (Predicate Logic + Graph Theory)</div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt10">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Предикатная логика + Основы теории графов
+
+ЧАСТЬ 1 — Предикатная логика:
+1. Объясни по-русски:
+   - Предикаты и кванторы: ∀ (для всех), ∃ (существует)
+   - Отрицание кванторов: ¬∀x P(x) ≡ ∃x ¬P(x)
+   - Свободные и связанные переменные
+   - Как формализовать утверждения в предикатной логике
+
+2. Дай 4 задачи: переведи утверждение в формулу и обратно. Затем проверь.
+
+ЧАСТЬ 2 — Теория графов (быстрый повтор):
+3. Объясни кратко (Russian): степень вершины, связность, пути, циклы, деревья, directed vs undirected. Дай 2 задачи в стиле экзамена.
+
+Теорию объясняй на русском, задачи — на английском.<div class="copy-btn" onclick="copyPrompt('prompt10', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day10')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 11 -->
+  <div class="day-card" id="day11">
+    <div class="day-header" onclick="toggle('day11')">
+      <div class="day-num">DAY 11</div>
+      <div>
+        <div class="day-title">Set Theory, Relations & Generating Functions</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-review">Review</span>
+          <span class="topic-chip chip-practice">Practice</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Повторить теорию множеств, отношения (equiv., partial order)</li>
+        <li>Понять производящие функции как инструмент для рекуррентностей</li>
+        <li>Закрыть "тёмные пятна" по всем темам</li>
+      </ul>
+      <div class="pages-ref">📄 Lecture pages: <span>~1–90 и ~195–240</span></div>
+
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt11">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Повторение — Set Theory, Relations, Generating Functions
+
+ЧАСТЬ 1 — Set Theory & Relations:
+1. Кратко напомни по-русски: операции над множествами, мощность множества, декартово произведение.
+2. Объясни типы отношений: рефлексивные, симметричные, транзитивные, отношения эквивалентности, частичный порядок.
+3. Дай 3 задачи на эти темы в стиле экзамена KBTU.
+
+ЧАСТЬ 2 — Generating Functions:
+4. Объясни по-русски что такое производящая функция (ordinary generating function) и как её использовать для решения рекуррентностей.
+5. Покажи 1 пример решения рекуррентности через generating functions.
+
+Теорию объясняй на русском, задачи — на английском.<div class="copy-btn" onclick="copyPrompt('prompt11', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day11')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 12 -->
+  <div class="day-card" id="day12">
+    <div class="day-header" onclick="toggle('day12')">
+      <div class="day-num">DAY 12</div>
+      <div>
+        <div class="day-title">Full Review — All Topics Speed Round</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-review">Review</span>
+          <span class="topic-chip chip-practice">Practice</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Пройтись по всем 6 темам экзамена в формате флеш-карточек</li>
+        <li>Выявить слабые места для повторения на Day 13</li>
+        <li>Практиковать скорость решения (120 минут = ~20 мин на задачу)</li>
+      </ul>
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt12">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Быстрый обзор всех тем (Speed Review)
+
+Задай мне по 2 вопроса/задачи по каждой из следующих тем. После каждой темы жди моего ответа и оценивай:
+
+1. Mathematical Induction (1 задача на доказательство формулы)
+2. Combinatorics — Stars-and-Bars / Inclusion-Exclusion (1 задача)
+3. Recurrence Relations (1 задача — найти замкнутую форму)
+4. Chinese Remainder Theorem (1 система сравнений)
+5. Boolean Functions — Truth Table + DNF/CNF + PDNF/ANF (1 функция, все части)
+6. Regular Languages — Regex + NFA + DFA (1 язык, все части)
+
+После каждого ответа: укажи что верно, что неверно, и дай правильное решение если я ошибся.
+В конце: дай мне список тем, в которых я ошибся, чтобы я мог повторить их завтра.
+
+Задачи давай на английском (как на экзамене).<div class="copy-btn" onclick="copyPrompt('prompt12', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day12')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 13 -->
+  <div class="day-card" id="day13">
+    <div class="day-header" onclick="toggle('day13')">
+      <div class="day-num">DAY 13</div>
+      <div>
+        <div class="day-title">Weak Spots + Full Mock Exam</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-exam">Mock Exam</span>
+          <span class="topic-chip chip-practice">Practice</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Повторить темы где были ошибки на Day 12</li>
+        <li>Пройти полный пробный экзамен за 120 минут</li>
+        <li>Разобрать ошибки пробного экзамена</li>
+      </ul>
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt13">Я студент KBTU, готовлюсь к финалу по Discrete Structures (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Пробный экзамен (Mock Exam — 120 минут)
+
+Составь для меня полный пробный вариант экзамена в точном формате нулевого варианта:
+
+1. (5 points) Доказать по индукции: выбери формулу суммы (не ∑k⁵)
+2. (5 points) Задача на подсчёт решений уравнения x₁+x₂+x₃+x₄ = N с ограничениями
+3. (5 points) Рекуррентное соотношение с начальными условиями
+4. (5 points) Система 3 сравнений для решения по CRT
+5. (10 points) Булева функция с операторами (a) таблица (b) DNF/CNF (c) PDNF/PCNF (d) ANF
+6. (10 points) Язык L с двумя условиями: (a) regex (b) NFA (c) DFA
+
+Дай мне задачи и подожди. Я отвечу — ты проверишь каждый ответ пошагово, укажешь баллы (из 40), объяснишь ошибки.
+
+Задачи — на английском (формат экзамена).<div class="copy-btn" onclick="copyPrompt('prompt13', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day13')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+  <!-- Day 14 -->
+  <div class="day-card" id="day14">
+    <div class="day-header" onclick="toggle('day14')">
+      <div class="day-num">DAY 14</div>
+      <div>
+        <div class="day-title">Final Day — Formula Sheet + Last Review</div>
+        <div class="topics-row">
+          <span class="topic-chip chip-review">Review</span>
+          <span class="topic-chip chip-exam">Pre-Exam</span>
+        </div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="section-label">Goals</div>
+      <ul class="goals-list">
+        <li>Получить шпаргалку со всеми формулами курса</li>
+        <li>Повторить алгоритмы решения каждой задачи экзамена</li>
+        <li>Отдохнуть — не нагружай мозг за 12 часов до экзамена</li>
+      </ul>
+      <div class="section-label">Copy-Paste Prompt</div>
+      <div class="prompt-box" id="prompt14">Я студент KBTU, финал по Discrete Structures завтра (преподаватель Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Финальное повторение + Шпаргалка
+
+1. Составь краткую шпаргалку (cheat sheet) по всем темам экзамена в формате "алгоритм решения":
+   - Induction: шаблон доказательства (3 шага)
+   - Stars-and-Bars: формула C(n+k-1, k-1) — когда применять
+   - Recurrences: метод характеристического уравнения — шаги
+   - CRT: пошаговый алгоритм (5 шагов)
+   - Boolean Functions: алгоритм получения ANF/Zhegalkin
+   - DFA construction: стратегия выбора состояний
+
+2. Спроси меня устно (вопрос-ответ) по каждой теме — 1 быстрый вопрос на каждую. Я отвечаю коротко, ты говоришь верно/неверно.
+
+3. Напомни мне что взять на экзамен и как распределить 120 минут по задачам.
+
+Отвечай на русском.<div class="copy-btn" onclick="copyPrompt('prompt14', this)">COPY</div></div>
+      <button class="check-btn" onclick="markDone('day14')">✓ Отметить выполненным</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  KBTU · School of Applied Mathematics · Discrete Structures 2025–2026<br>
+  Made for exam prep · Good luck, Daniyar! 🎯
+</footer>
+
+<script>
+  function toggle(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+
+  function copyPrompt(id, btn) {
+    const text = document.getElementById(id).innerText.replace('COPY', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'COPIED!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function markDone(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('done');
+    if (card.classList.contains('open')) card.classList.remove('open');
+  }
+
+  // Open first card by default
+  document.getElementById('day1').classList.add('open');
+</script>
+</body>
+</html>
