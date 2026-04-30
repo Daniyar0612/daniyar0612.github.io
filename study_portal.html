@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KBTU Study Portal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
+:root{--bg:#07070f;--surface:#0f0f1a;--card:#151522;--border:#222235;--text:#e8e8f2;--muted:#5a5a7a;--radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;padding-bottom:4rem}
+/* NAV */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(7,7,15,.92);backdrop-filter:blur(12px);z-index:100}
+.logo{font-family:'Space Mono',monospace;font-size:.85rem;color:var(--muted);letter-spacing:2px}
+.logo span{color:#e8e8f2}
+.subject-tabs{display:flex;gap:.4rem}
+.stab{font-family:'Space Mono',monospace;font-size:.72rem;padding:6px 14px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.stab.active{color:#fff;border-color:var(--sa-color)}
+/* HERO */
+.hero{max-width:900px;margin:2.5rem auto 2rem;padding:0 1.5rem;text-align:center}
+.subject-badge{display:inline-flex;align-items:center;gap:.5rem;padding:6px 16px;border-radius:999px;font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.2rem;border:1px solid}
+h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;line-height:1.1;margin-bottom:.6rem}
+h1 em{font-style:normal}
+.desc{color:var(--muted);font-size:.95rem;margin-bottom:2rem}
+.meta-row{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap}
+.meta-item .num{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700}
+.meta-item .lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+/* WEEK LABEL */
+.container{max-width:900px;margin:0 auto;padding:0 1.5rem}
+.week-sep{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin:2.5rem 0 1rem;padding:0 0 0 10px;border-left:3px solid var(--sa-color)}
+/* DAY CARD */
+.day-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.8rem;overflow:hidden;transition:border-color .2s}
+.day-card:hover{border-color:var(--sa-color)}
+.day-card.done{opacity:.4}
+.day-header{display:flex;align-items:center;gap:1rem;padding:.9rem 1.2rem;cursor:pointer;user-select:none}
+.day-num{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--sa-color);background:rgba(255,255,255,.04);border:1px solid var(--sa-color-dim);border-radius:6px;padding:3px 8px;min-width:52px;text-align:center;flex-shrink:0}
+.day-info{flex:1}
+.day-title{font-size:.95rem;font-weight:600}
+.chips{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.25rem}
+.chip{font-size:.62rem;padding:2px 8px;border-radius:999px;font-weight:400}
+.chip-t{background:rgba(124,106,247,.12);color:#a89ef7;border:1px solid rgba(124,106,247,.25)}
+.chip-p{background:rgba(247,198,106,.12);color:#f7c66a;border:1px solid rgba(247,198,106,.25)}
+.chip-q{background:rgba(106,247,198,.12);color:#6af7c6;border:1px solid rgba(106,247,198,.25)}
+.chip-e{background:rgba(247,106,106,.12);color:#f79e9e;border:1px solid rgba(247,106,106,.25)}
+.chevron{color:var(--muted);font-size:.75rem;transition:transform .2s;flex-shrink:0}
+.day-card.open .chevron{transform:rotate(180deg)}
+/* DAY BODY */
+.day-body{display:none;padding:0 1.2rem 1.2rem;border-top:1px solid var(--border)}
+.day-card.open .day-body{display:block}
+.sec-label{font-family:'Space Mono',monospace;font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin:1rem 0 .5rem}
+.goals-list{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.goals-list li{display:flex;align-items:flex-start;gap:.5rem;font-size:.88rem;line-height:1.5}
+.goals-list li::before{content:'→';color:var(--sa-color);font-family:'Space Mono',monospace;flex-shrink:0}
+/* TERMS TABLE */
+.terms-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+@media(max-width:600px){.terms-grid{grid-template-columns:1fr}}
+.term-row{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:.4rem .7rem;font-size:.8rem}
+.term-en{color:var(--text)}
+.term-ru{color:var(--sa-color);font-family:'Space Mono',monospace;font-size:.72rem;text-align:right}
+/* PROMPT BOX */
+.prompt-wrap{position:relative}
+.prompt-box{background:#080810;border:1px solid var(--sa-color);border-radius:8px;padding:1rem 3.5rem 1rem 1rem;font-family:'Space Mono',monospace;font-size:.76rem;line-height:1.75;color:#c8c8e8;white-space:pre-wrap;word-break:break-word}
+.copy-btn{position:absolute;top:.6rem;right:.6rem;background:rgba(255,255,255,.06);border:1px solid var(--sa-color-dim);color:var(--sa-color);font-family:'Space Mono',monospace;font-size:.62rem;padding:4px 9px;border-radius:5px;cursor:pointer;transition:all .2s}
+.copy-btn:hover{background:var(--sa-color-dim)}
+.copy-btn.ok{color:#6af7c6;border-color:#6af7c6}
+/* QUIZ */
+.quiz-block{margin-top:0}
+.quiz-q{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem;margin-bottom:.6rem}
+.quiz-q .q-text{font-size:.85rem;margin-bottom:.6rem;line-height:1.5}
+.quiz-options{display:flex;flex-direction:column;gap:.3rem}
+.q-opt{display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:.45rem .7rem;cursor:pointer;font-size:.82rem;transition:all .15s}
+.q-opt:hover{border-color:var(--sa-color-dim)}
+.q-opt.correct{background:rgba(106,247,198,.1);border-color:#6af7c6;color:#6af7c6}
+.q-opt.wrong{background:rgba(247,106,106,.1);border-color:#f76a6a;color:#f79e9e}
+.q-opt.reveal{background:rgba(106,247,198,.06);border-color:#6af7c6;color:#6af7c6}
+.q-opt-letter{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);flex-shrink:0}
+/* ACTION ROW */
+.action-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+.btn-sm{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Syne',sans-serif;font-size:.78rem;padding:6px 14px;border-radius:6px;cursor:pointer;transition:all .2s}
+.btn-sm:hover{border-color:var(--sa-color);color:var(--sa-color)}
+.btn-done{border-color:rgba(106,247,198,.3);color:#6af7c6}
+/* HIDDEN SUBJECT SECTIONS */
+.subject-section{display:none}
+.subject-section.active{display:block}
+/* FOOTER */
+footer{text-align:center;color:var(--muted);font-size:.72rem;font-family:'Space Mono',monospace;margin-top:3rem}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">KBTU · <span>Study Portal</span></div>
+  <div class="subject-tabs" id="subjectTabs"></div>
+</div>
+
+<div id="app"></div>
+
+<footer id="footer">KBTU · 2025–2026 · Good luck, Daniyar 🎯</footer>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────
+const SUBJECTS = [
+  {
+    id: "sociology",
+    name: "Sociology",
+    icon: "🏛",
+    color: "#f76a9e",
+    colorDim: "rgba(247,106,158,.18)",
+    desc: "Social Problems · Stratification · Corruption · Nationalism · Democracy",
+    stats: [{n:"14",l:"Days"},{n:"13",l:"Topics"},{n:"Final",l:"Format: Test"},{n:"EN",l:"Exam Lang"}],
+    weeks: [
+      {
+        label: "Week 1 — Society & Inequality",
+        days: [
+          {
+            n:1, title:"Social Problems", chips:["theory","quiz"],
+            goals:["Понять что делает проблему «социальной» — 4 implicit claims","Объяснить objectivist vs social constructionist approach","Выучить: claims-makers, problematisation, culture + примеры"],
+            terms:[
+              {en:"Social problem",ru:"Социальная проблема"},
+              {en:"Objectivist approach",ru:"Объективистский подход"},
+              {en:"Social constructionist",ru:"Социальный конструктивизм"},
+              {en:"Claims-makers",ru:"Создатели требований"},
+              {en:"Problematisation",ru:"Проблематизация"},
+              {en:"Culture",ru:"Культура"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology. Финал — тест на английском.
+
+ТЕМА ДНЯ: Social Problems (Лекции 2.1–2.5)
+
+1. Объясни на русском:
+   — Что такое "social problem"? Какие 4 implicit claims содержатся в этом понятии?
+   — В чём разница между objectivist approach и social constructionist approach?
+     Какие ключевые research questions изучает каждый подход?
+   — Как культура влияет на то, что разные общества считают социальной проблемой?
+     Дай примеры. Как культура влияет на эффективность policy interventions?
+
+2. Переведи и объясни термины (EN→RU):
+   social problem / claims-makers / problematisation / culture /
+   objectivist / social constructionist approach
+
+3. Составь для меня 5 тестовых вопросов (multiple choice, 4 варианта) по этой теме
+   в стиле финального теста KBTU — на английском. После моих ответов проверь и объясни.`,
+            quiz:[
+              {q:"Which approach to social problems focuses on objective conditions that cause harm to society?",
+               opts:["Social constructionist approach","Objectivist approach","Functionalist approach","Marxist approach"],ans:1},
+              {q:"Who are 'claims-makers' in the study of social problems?",
+               opts:["Government statisticians who measure poverty rates","People/groups who assert that a condition is a social problem","Scientists who study social phenomena objectively","Victims of social problems"],ans:1},
+              {q:"'Problematisation' refers to:",
+               opts:["The process of solving a social problem","The process by which something comes to be defined as a social problem","The statistical measurement of a social problem","A government policy to address social issues"],ans:1},
+              {q:"How can culture affect policy interventions to tackle social problems?",
+               opts:["Culture has no effect on policy effectiveness","Cultural norms can make certain interventions acceptable or unacceptable in different societies","Culture only affects problems in non-Western societies","Policy interventions are always culturally neutral"],ans:1}
+            ]
+          },
+          {
+            n:2, title:"Social Stratification & Class", chips:["theory","quiz"],
+            goals:["Выучить определения: social class, social mobility, operationalising","Понять EGP schema — market situation + work situation","White collar vs Blue collar — чёткая разница","Изменения в классовой структуре Западных обществ после 1945"],
+            terms:[
+              {en:"Social class",ru:"Социальный класс"},
+              {en:"Social mobility",ru:"Социальная мобильность"},
+              {en:"Operationalising a variable",ru:"Операционализация переменной"},
+              {en:"EGP schema",ru:"Схема ЭГП (Эриксон-Голдторп-Портокарреро)"},
+              {en:"Market situation",ru:"Рыночная ситуация"},
+              {en:"Work situation",ru:"Рабочая ситуация"},
+              {en:"White collar jobs",ru:"Работа «белых воротничков»"},
+              {en:"Blue collar jobs",ru:"Работа «синих воротничков»"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Social Stratification & Social Class (Лекция 3.1)
+
+1. Объясни на русском:
+   — Social class и social mobility — определения
+   — Что значит "operationalising a variable"? Зачем это нужно?
+   — EGP schema (Erikson-Goldthorpe-Portocarero): что это такое?
+     Объясни два критерия: market situation и work situation
+   — Что такое white collar jobs и blue collar jobs? Примеры каждого
+   — Какие изменения произошли в классовой структуре Западных обществ после 1945?
+     Назови две основные причины этих изменений
+
+2. Переведи и объясни (EN→RU):
+   social class / social mobility / operationalising / market situation /
+   work situation / white collar / blue collar / EGP schema
+
+3. Дай 5 тестовых вопросов по этой теме на английском (multiple choice).
+   После ответов — проверь и объясни ошибки.`,
+            quiz:[
+              {q:"What does the 'market situation' criterion in the EGP schema refer to?",
+               opts:["The geographical location of a worker's job","Income, job security, and promotion prospects","The physical conditions of work","Whether someone works in the public or private sector"],ans:1},
+              {q:"'White collar jobs' typically refer to:",
+               opts:["Jobs in factories and manual labour","Office-based, non-manual professional jobs","Jobs in agriculture","Any job paying minimum wage"],ans:1},
+              {q:"Social mobility refers to:",
+               opts:["Physical movement of people between cities","Movement of individuals between different social classes","Immigration between countries","The growth of the middle class"],ans:1},
+              {q:"What were the TWO main reasons for changes in the class structure of Western societies after 1945?",
+               opts:["War and immigration","Deindustrialisation and expansion of the service sector","Tax reforms and globalisation","Feminism and technology"],ans:1}
+            ]
+          },
+          {
+            n:3, title:"Poverty & Inequality", chips:["theory","quiz"],
+            goals:["Абсолютная vs относительная бедность — чёткая разница + примеры","Peter Townsend — его главные идеи","Social exclusion, consensual poverty — определения","Gini coefficient + Lorenz curve + income quintile ratio","3 теоретических подхода: Functionalist / Marxist / Weberian"],
+            terms:[
+              {en:"Absolute poverty",ru:"Абсолютная бедность"},
+              {en:"Relative poverty",ru:"Относительная бедность"},
+              {en:"Social exclusion",ru:"Социальная эксклюзия"},
+              {en:"Consensual poverty",ru:"Консенсусная бедность"},
+              {en:"Gini coefficient",ru:"Коэффициент Джини"},
+              {en:"Lorenz curve",ru:"Кривая Лоренца"},
+              {en:"Income quintile ratio",ru:"Коэффициент квинтильного дохода"},
+              {en:"Spirit Level",ru:"Книга «Дух уровня»"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Poverty & Inequality (Лекции 3.2–3.4)
+
+1. Объясни на русском:
+   — Absolute poverty vs relative poverty — определения и отличие
+   — Peter Townsend: его главные идеи о бедности
+   — Social exclusion: определение + примеры
+   — Consensual idea of poverty: определение и метод измерения
+   — Gini coefficient: что измеряет, что означают значения 0 и 1
+   — Lorenz curve: опиши её (что на осях, что означает прямая линия)
+   — Income quintile ratio: как считается?
+   — 3 теоретических перспективы на социальную стратификацию:
+     Functionalist / Marxist / Weberian — по 2-3 предложения на каждую
+   — The Spirit Level: авторы книги, почему люди в неравных обществах испытывают больший стресс, критика их аргументов
+
+2. Переведи (EN→RU): absolute poverty / relative poverty / Gini coefficient /
+   social exclusion / Lorenz curve / income quintile ratio / consensual poverty
+
+3. Дай 5 тестовых вопросов по теме. После ответов проверь.`,
+            quiz:[
+              {q:"According to Peter Townsend, poverty should be understood as:",
+               opts:["Having less than $2 per day","Lacking the resources to participate in the customs and activities of society","Being unemployed for more than 6 months","Inability to afford food and shelter"],ans:1},
+              {q:"A Gini coefficient of 0 represents:",
+               opts:["Maximum inequality (one person has all income)","Perfect equality (everyone has equal income)","Average level of inequality","No income data available"],ans:2},
+              {q:"The income quintile ratio measures:",
+               opts:["The average income of the middle class","The ratio of income of the top 20% to the bottom 20%","The percentage of people living in poverty","Total national income"],ans:1},
+              {q:"The 'consensual' method of measuring poverty involves:",
+               opts:["Governments setting an official poverty line","Asking members of society what they consider necessities","Comparing poverty rates across countries","Using the Gini coefficient"],ans:1}
+            ]
+          },
+          {
+            n:4, title:"Domestic Violence & Family", chips:["theory","quiz"],
+            goals:["5 типов abuse + примеры каждого","IPV, coercive control — определения","Patriarchal norms — связь с домашним насилием","Bride kidnapping / ala kachuu — consensual vs non-consensual","Типы семей: nuclear, extended, single-parent, cohabiting"],
+            terms:[
+              {en:"Intimate Partner Violence (IPV)",ru:"Насилие со стороны интимного партнёра"},
+              {en:"Coercive control",ru:"Принудительный контроль"},
+              {en:"Patriarchal norms",ru:"Патриархальные нормы"},
+              {en:"Bride kidnapping / Ala kachuu",ru:"Похищение невесты / Ала качуу"},
+              {en:"Elopement",ru:"Тайное бегство / тайная свадьба"},
+              {en:"Nuclear family",ru:"Нуклеарная семья"},
+              {en:"Extended family",ru:"Расширенная семья"},
+              {en:"Cohabiting",ru:"Сожительство"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Domestic Violence & Family (Лекции 4.1–4.3 + Podcast The Family)
+
+1. Объясни на русском:
+   — 5 типов abuse — назови и дай пример каждого
+   — IPV (расшифруй аббревиатуру) и coercive control — определение + примеры того, что включает coercive control
+   — Patriarchal norms: определение + как они влияют на domestic violence
+   — Факторы, мешающие женщинам-жертвам обратиться за помощью
+   — Bride kidnapping / ala kachuu: определение
+   — To elope / elopement: что это значит
+   — Consensual vs non-consensual bride kidnapping: объясни разницу
+
+2. Типы семей (Podcast The Family):
+   Определи: nuclear / extended / single-parent / cohabiting family
+
+3. Переведи (EN→RU): IPV / coercive control / patriarchal norms /
+   bride kidnapping / elopement / nuclear family / extended family
+
+4. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"What does IPV stand for?",
+               opts:["International Policy Violation","Intimate Partner Violence","Indirect Physical Violence","Integrated Protection for Victims"],ans:1},
+              {q:"Coercive control in domestic violence refers to:",
+               opts:["Only physical violence between partners","A pattern of behaviour including isolation, monitoring, and psychological manipulation","Violence that occurs only in marriage","Financial disputes between partners"],ans:1},
+              {q:"Patriarchal norms contribute to domestic violence by:",
+               opts:["Encouraging women to work outside the home","Creating power imbalances that normalise male dominance over women","Strengthening legal protections for women","Promoting gender equality"],ans:1},
+              {q:"What is 'ala kachuu'?",
+               opts:["A Kazakh wedding ceremony","The Kyrgyz practice of bride kidnapping","A form of arranged marriage","A legal term for domestic abuse"],ans:1}
+            ]
+          },
+          {
+            n:5, title:"Child Abuse, Social Learning & Cycle of Violence", chips:["theory","quiz"],
+            goals:["Neglect — определение","Факторы, мешающие детям-жертвам обратиться за помощью","Social Learning Theory (Bandura) — ключевые идеи","Misogyny, patriarchy, victim-blaming — определения","Cycle of abuse (Lenore Walker) — 4 стадии и почему жертвы остаются"],
+            terms:[
+              {en:"Neglect",ru:"Пренебрежение / халатность"},
+              {en:"Social learning theory",ru:"Теория социального обучения"},
+              {en:"Misogyny",ru:"Мизогиния"},
+              {en:"Patriarchy",ru:"Патриархат"},
+              {en:"Victim-blaming",ru:"Обвинение жертвы"},
+              {en:"Cycle of abuse",ru:"Цикл насилия"},
+              {en:"Tension building",ru:"Нарастание напряжения"},
+              {en:"Honeymoon phase",ru:"Фаза примирения («медовый месяц»)"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Child Abuse + Social Learning Theory + Cycle of Abuse (Лекции 4.4–4.5 + Podcasts)
+
+1. Объясни на русском:
+   — Neglect: определение (в контексте child abuse)
+   — Факторы, мешающие детям-жертвам abuse обратиться за помощью (минимум 3)
+   — Social Learning Theory (Albert Bandura): что это такое, как объясняет передачу насилия
+
+2. Podcasts — объясни:
+   — Misogyny: определение
+   — Patriarchy: определение
+   — Victim-blaming: определение + пример
+   — Lenore Walker — cycle of abuse: назови и объясни все 4 стадии
+     Как цикл объясняет, почему жертвы остаются в абьюзивных отношениях?
+
+3. Case Study Saltanat Nukenova:
+   — Что этот кейс показывает о domestic violence?
+   — Как реагировала полиция? Какие трудности в выходе из отношений?
+
+4. Переведи (EN→RU): neglect / social learning theory / misogyny / patriarchy /
+   victim-blaming / cycle of abuse / coercive control
+
+5. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"According to Albert Bandura's Social Learning Theory, domestic violence is passed on because:",
+               opts:["Violence is genetic and inherited","Children who witness violence learn that it is normal behaviour","Men are naturally more aggressive","Poverty causes violent behaviour"],ans:1},
+              {q:"Lenore Walker's 'cycle of abuse' describes how many stages?",
+               opts:["2","3","4","5"],ans:2},
+              {q:"The 'honeymoon phase' in the cycle of abuse refers to:",
+               opts:["The early stage of a relationship before abuse begins","When the abuser apologises, shows affection, and promises to change","A period of calm with no tension","When the victim decides to leave"],ans:1},
+              {q:"'Victim-blaming' in the context of domestic violence means:",
+               opts:["Holding the abuser legally responsible","Attributing responsibility for the abuse to the victim rather than the perpetrator","Blaming society for failing to protect victims","A legal defence strategy"],ans:1}
+            ]
+          }
+        ]
+      },
+      {
+        label: "Week 2 — Politics & Power",
+        days: [
+          {
+            n:6, title:"Political Regimes", chips:["theory","quiz"],
+            goals:["Formal vs informal elements of political regime","Juan Jose Linz: authoritarian vs totalitarian vs post-totalitarian","Fukuyama — 'end of history' + criticisms","Competitive authoritarianism (Levitsky & Way)","Freedom House / V-Dem / Polity — как измеряют режимы"],
+            terms:[
+              {en:"Political regime",ru:"Политический режим"},
+              {en:"Authoritarian regime",ru:"Авторитарный режим"},
+              {en:"Totalitarian regime",ru:"Тоталитарный режим"},
+              {en:"Post-totalitarian regime",ru:"Посттоталитарный режим"},
+              {en:"End of history",ru:"«Конец истории»"},
+              {en:"Competitive authoritarianism",ru:"Конкурентный авторитаризм"},
+              {en:"Teleological view",ru:"Телеологический взгляд"},
+              {en:"Regime indices",ru:"Индексы режимов"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Political Regimes (Лекции 5.1–5.4)
+
+1. Объясни на русском:
+   — Political regime: определение (официальное + простыми словами)
+   — Formal и informal элементы политического режима — перечисли
+   — Juan Jose Linz: название его книги, год публикации
+     Разница между authoritarian и totalitarian режимами по Linz (таблица)
+     Разница между totalitarian и post-totalitarian режимами
+
+2. Теоретические перспективы:
+   — Teleological view of history — что это?
+   — Francis Fukuyama: название книги, год, что он имел в виду под "end of history", 
+     какие мировые события повлияли на его идеи
+   — Levitsky & Way: их критика Fukuyama, что они имеют в виду под "competitive authoritarianism"
+
+3. Измерение режимов:
+   — Freedom House: 3 категории, критика
+   — V-Dem (Regimes of the World): 4 категории режимов + определение + примеры стран
+   — Polity: система оценки режимов
+   — V-Dem Democracy Report 2024: главные тенденции за последние 20 лет
+
+4. Переведи (EN→RU): political regime / authoritarian / totalitarian / 
+   competitive authoritarianism / end of history / Freedom House / V-Dem
+
+5. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"According to Juan Jose Linz, what is a KEY difference between authoritarian and totalitarian regimes?",
+               opts:["Totalitarian regimes allow limited political pluralism","Totalitarian regimes seek to mobilise the entire population and control all aspects of life","Authoritarian regimes have stronger economies","Authoritarian regimes always hold elections"],ans:1},
+              {q:"Francis Fukuyama's 'end of history' thesis argued that:",
+               opts:["Humanity had run out of new ideas","Liberal democracy represented the final form of human government","History moves in cycles","All political regimes eventually become authoritarian"],ans:1},
+              {q:"Levitsky and Way's concept of 'competitive authoritarianism' describes regimes where:",
+               opts:["There are no elections at all","Elections exist but are fundamentally unfair, giving incumbents decisive advantages","Democracy functions perfectly","The military controls all political decisions"],ans:1},
+              {q:"V-Dem's 'Regimes of the World' classification includes how many regime categories?",
+               opts:["2","3","4","6"],ans:2}
+            ]
+          },
+          {
+            n:7, title:"Liberal Democracy", chips:["theory","quiz"],
+            goals:["Direct vs representative democracy","Separation of powers, Rule of law — все элементы","Свободы: speech, press, internet, association, assembly","Watchdog journalism, media regulation","Peter Mair — 'the void', кризис либеральной демократии"],
+            terms:[
+              {en:"Direct democracy",ru:"Прямая демократия"},
+              {en:"Representative democracy",ru:"Представительная демократия"},
+              {en:"Liberalism",ru:"Либерализм"},
+              {en:"Separation of powers",ru:"Разделение властей"},
+              {en:"Rule of law",ru:"Верховенство закона"},
+              {en:"Watchdog journalism",ru:"Журналистика-«сторожевая собака»"},
+              {en:"Media regulation",ru:"Регулирование СМИ"},
+              {en:"Populism",ru:"Популизм"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Liberal Democracy (Module 1–3 + Podcast 6.1)
+
+1. Объясни на русском:
+   — Direct democracy vs representative democracy — определения
+   — Liberalism: определение
+   — Separation of powers: определение
+   — Rule of law — объясни все 4 элемента: equality before the law / clarity / reasonableness / retroactivity
+   — Friedrich von Hayek: название его книги 1944 года, почему частная собственность — основа либеральной демократии по Хайеку
+   — Freedom of speech / press / internet / association / assembly — определения каждого
+
+2. Module 2–3:
+   — Free, fair, competitive elections — определи каждое слово отдельно
+   — Reporters Without Borders Press Freedom Index: что измеряет, критика
+   — Watchdog journalism: определение
+   — News of the World phone hacking scandal (2009–2011): основные факты, что показывает
+   — Media regulation organizations: что это, зачем нужны
+
+3. Podcast 6.1 — кризис либеральной демократии:
+   — Причины кризиса: membership of parties / voter turnout / distrust
+   — Peter Mair: название книги, что он имел в виду под "the void"
+   — Populist movements: определение + примеры
+
+4. Переведи (EN→RU): rule of law / separation of powers / watchdog journalism /
+   direct democracy / representative democracy / freedom of assembly / populism
+
+5. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"The 'rule of law' principle of 'retroactivity' means that:",
+               opts:["Laws apply equally to everyone","Laws must be clear and understandable","People cannot be punished under laws that didn't exist when they acted","Laws must be reasonable and not arbitrary"],ans:2},
+              {q:"Friedrich von Hayek argued that private property rights are fundamental to liberal democracy because:",
+               opts:["They reduce inequality","They provide economic independence that protects individuals from government power","They encourage economic growth","They ensure equal distribution of wealth"],ans:1},
+              {q:"Watchdog journalism refers to:",
+               opts:["Journalism that supports the government","Investigative journalism that monitors the abuse of power by governments and corporations","Celebrity news and entertainment","Social media content creation"],ans:1},
+              {q:"According to Peter Mair, 'the void' in liberal democracies refers to:",
+               opts:["The lack of qualified politicians","The growing gap between political parties and citizens, as parties increasingly focus on governing rather than representing","Empty parliament seats","Lack of free press"],ans:1}
+            ]
+          },
+          {
+            n:8, title:"Civil Society, Pressure Groups & Surveillance", chips:["theory","quiz"],
+            goals:["Civil society — определение и характеристики","Marc Howard — причины низкого участия в постсоветских обществах (ВАЖНО!)","Insider vs outsider pressure groups","Grassroots movements — тактики","State surveillance — Snowden revelations"],
+            terms:[
+              {en:"Civil society",ru:"Гражданское общество"},
+              {en:"Pressure groups",ru:"Группы давления"},
+              {en:"Insider pressure groups",ru:"Инсайдерские группы давления"},
+              {en:"Outsider pressure groups",ru:"Аутсайдерские группы давления"},
+              {en:"Grassroots movements",ru:"Движения «снизу»"},
+              {en:"State surveillance",ru:"Государственная слежка"},
+              {en:"Edward Snowden",ru:"Эдвард Сноуден"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Civil Society, Pressure Groups & State Surveillance (Module 1–2 + Podcast 8.1)
+
+1. Объясни на русском:
+   — Civil society: определение и характеристики
+   — Причины низкого участия в гражданском обществе в постсоветских обществах по Marc Howard
+     (ОЧЕНЬ ВАЖНО — будет open question на финале! Объясни подробно все причины)
+
+2. Pressure groups:
+   — Определение
+   — Insider vs outsider pressure groups: объясни разницу + примеры
+   — Grassroots movements: определение + исторический пример + тактики
+
+3. Podcast 8.1 — Surveillance:
+   — State surveillance: определение
+   — Advantages для правительства И для граждан
+   — Disadvantages для правительства И для граждан
+   — Edward Snowden revelations (2013): кто он, что сделал, почему это вызвало скандал, 
+     что изменили правительства в результате
+
+4. Переведи (EN→RU): civil society / pressure groups / insider / outsider /
+   grassroots movement / state surveillance / whistleblower
+
+5. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"According to Marc Howard, why is civil society participation LOW in post-communist societies?",
+               opts:["Because people are too poor","Because of the legacy of distrust from communist-era mandatory organisations, post-communist friendship networks, and disillusionment with reform","Because governments ban civil society organisations","Because education levels are low"],ans:1},
+              {q:"What is the difference between 'insider' and 'outsider' pressure groups?",
+               opts:["Insider groups are larger; outsider groups are smaller","Insider groups have access to and work with government; outsider groups operate outside formal political channels","Insider groups are legal; outsider groups are illegal","Insider groups focus on economic issues; outsider groups on social issues"],ans:1},
+              {q:"Edward Snowden's 2013 revelations showed that:",
+               opts:["Russia was spying on the US government","The US government (NSA) was conducting mass surveillance of its own citizens and foreign governments","China had hacked the US military","Facebook was selling user data to governments"],ans:1},
+              {q:"A 'grassroots movement' is best defined as:",
+               opts:["A professional lobbying organisation","A political party","A movement organised from the bottom up by ordinary citizens, rather than by established institutions","A government-funded community programme"],ans:2}
+            ]
+          }
+        ]
+      },
+      {
+        label: "Week 3 — Corruption",
+        days: [
+          {
+            n:9, title:"Corruption: Classification & Psychology", chips:["theory","quiz"],
+            goals:["TI definition of corruption — наизусть (ВАЖНО)","Principal-agent model — как объясняет коррупцию","Grand vs petty corruption","CPI — scoring system","Milgram experiments + cognitive dissonance","Bandura's moral disengagement — все 8 механизмов"],
+            terms:[
+              {en:"Corruption (TI definition)",ru:"Коррупция (определение TI)"},
+              {en:"Principal-agent model",ru:"Модель «принципал-агент»"},
+              {en:"Grand corruption",ru:"Крупная коррупция"},
+              {en:"Petty corruption",ru:"Мелкая коррупция"},
+              {en:"Corruption Perceptions Index (CPI)",ru:"Индекс восприятия коррупции"},
+              {en:"Cognitive dissonance",ru:"Когнитивный диссонанс"},
+              {en:"Moral disengagement",ru:"Моральное отстранение"},
+              {en:"Euphemistic labelling",ru:"Эвфемистическое обозначение"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Corruption — Classification & Psychology (Лекция 9)
+
+1. Объясни на русском:
+   — Эффекты коррупции на экономику и общество
+   — Transparency International: что это такое
+   — Определение коррупции по TI (ЗАПОМНИ ДОСЛОВНО — очень важно!)
+   — Principal-agent model: что это такое, как объясняет коррупцию
+
+2. Классификация и измерение:
+   — Grand corruption vs petty corruption: определения + примеры
+   — CPI (Corruption Perceptions Index): что измеряет, scoring system
+
+3. Психология коррупции:
+   — Stanley Milgram authority experiments: как проводились, главный вывод, 
+     как объясняет коррупцию
+   — Leon Festinger — cognitive dissonance: определение + пример
+
+4. Podcast — Bandura's Theory of Moral Disengagement:
+   Объясни ВСЕ 8 механизмов с примерами:
+   Behaviour locus: Moral Justification / Euphemistic Labelling / Advantageous Comparison
+   Agency locus: Displacement of Responsibility / Diffusion of Responsibility
+   Outcome locus: Distortion or Minimization of Consequences
+   Victim locus: Dehumanization / Attribution of Blame
+
+5. Переведи (EN→RU): principal-agent model / grand corruption / petty corruption /
+   CPI / cognitive dissonance / moral disengagement / euphemistic labelling
+
+6. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"Transparency International defines corruption as:",
+               opts:["Any illegal financial transaction","The abuse of entrusted power for private gain","When politicians accept bribes","Tax evasion by corporations"],ans:1},
+              {q:"In the principal-agent model applied to corruption, the 'agent' is:",
+               opts:["The citizen who pays a bribe","The official or employee who acts on behalf of the principal (e.g. the public) but may act in their own self-interest","The government as a whole","An international anti-corruption organisation"],ans:1},
+              {q:"Which of Bandura's moral disengagement mechanisms involves using language that makes harmful acts seem harmless (e.g. calling civilian deaths 'collateral damage')?",
+               opts:["Moral justification","Dehumanization","Euphemistic labelling","Displacement of responsibility"],ans:2},
+              {q:"Milgram's authority experiments found that:",
+               opts:["Most people refused to follow unethical orders","A majority of participants were willing to administer painful electric shocks when ordered by an authority figure","Only people with aggressive personalities followed orders","Authority has no influence on ethical decision-making"],ans:1}
+            ]
+          },
+          {
+            n:10, title:"Types of Corruption & Collective Action", chips:["theory","quiz"],
+            goals:["10 типов коррупции — определения наизусть","Collective action problem — как объясняет системную коррупцию (ВАЖНО!)","Prisoner's Dilemma и Tragedy of Commons — схемы","Democracy-corruption relationship — inverted U-shape","Watergate & MPs' expenses scandals"],
+            terms:[
+              {en:"Nepotism",ru:"Непотизм / кумовство"},
+              {en:"Cronyism",ru:"Блат / приятельство"},
+              {en:"Kleptocracy",ru:"Клептократия"},
+              {en:"Bribery",ru:"Взяточничество"},
+              {en:"Extortion",ru:"Вымогательство"},
+              {en:"Embezzlement",ru:"Растрата / хищение"},
+              {en:"Collective action problem",ru:"Проблема коллективных действий"},
+              {en:"Prisoner's Dilemma",ru:"Дилемма заключённого"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Types of Corruption & Collective Action (Лекции 10.1–10.5)
+
+1. Объясни на русском — определения 10 типов коррупции:
+   nepotism / cronyism / kleptocracy / influence-peddling / fraud /
+   bribery / extortion / kickbacks / embezzlement / misuse of public funds
+
+2. Collective action problem (ОЧЕНЬ ВАЖНО):
+   — Определение collective action problem
+   — Prisoner's Dilemma: краткое объяснение + схема
+   — Tragedy of the Commons: краткое объяснение + схема
+   — Почему системную коррупцию можно понять как collective action problem?
+   — Что это говорит об эффективных методах борьбы с коррупцией?
+
+3. Лекция 10.4:
+   — Связь между демократией и коррупцией
+   — Объясни график "inverted U-shape"
+
+4. Лекция 10.5:
+   — MPs' expenses scandal (UK): основные факты
+   — Watergate scandal (USA): основные факты
+   — Роль watchdog journalism в обоих случаях
+
+5. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"'Nepotism' refers to:",
+               opts:["Stealing public funds","Favouring relatives in appointments or decisions","Accepting bribes","Using public funds for personal expenses"],ans:1},
+              {q:"Why can systemic corruption be understood as a 'collective action problem'?",
+               opts:["Because corruption only affects collective organisations","Because even though everyone would benefit from less corruption, individuals have personal incentives to engage in it, making it rational to be corrupt when others are too","Because collective action always leads to corruption","Because corruption is always organised by groups, not individuals"],ans:1},
+              {q:"'Embezzlement' involves:",
+               opts:["Paying bribes to officials","Misappropriating funds entrusted to one's care for personal use","Forcing someone to pay money through threats","Giving government contracts to friends"],ans:1},
+              {q:"The 'inverted U-shape' graph of democracy and corruption suggests that:",
+               opts:["More democracy always means less corruption","At very low and very high levels of democracy corruption may be high, with middle levels potentially seeing different patterns","Corruption and democracy are completely unrelated","Corruption only exists in authoritarian regimes"],ans:1}
+            ]
+          },
+          {
+            n:11, title:"Cultural Perceptions of Corruption", chips:["theory","quiz"],
+            goals:["Economies of favours, blat, guanxi — различия","Почему blat был распространён в СССР — 3 причины Ledeneva (ВАЖНО)","Weber's ideal type bureaucracy — характеристики","Universalist vs particularist mindsets","Dual nature of blat","Whistleblowing — moral trade-off"],
+            terms:[
+              {en:"Economies of favours",ru:"Экономика услуг / обменов"},
+              {en:"Blat",ru:"Блат"},
+              {en:"Guanxi",ru:"Гуаньси (кит. связи)"},
+              {en:"Songli",ru:"Сунли (кит. дарение)"},
+              {en:"Reciprocity",ru:"Взаимность / реципрокность"},
+              {en:"Universalist mindset",ru:"Универсалистское мышление"},
+              {en:"Particularist mindset",ru:"Партикуляристское мышление"},
+              {en:"Whistleblowing",ru:"Разоблачение / «донос» из принципа"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Cultural Perceptions of Corruption (Лекция 11)
+
+1. Объясни на русском:
+   — Что символизируют подарки в разных культурах?
+   — Songli (Chinese practice): что это такое?
+   — Reciprocity: определение
+   — Economies of favours: определение + примеры из разных стран
+   — Blat: определение
+   — Почему blat был распространён в СССР по Alena Ledeneva? (3 причины — ВАЖНО!)
+   — Ambivalence: определение
+   — Guanxi: определение
+   — Dual nature of blat: объясни
+
+2. Weber's ideal type bureaucracy:
+   — Характеристики идеальной бюрократии по Веберу
+   — Связь между идеальной бюрократией Вебера и коррупцией
+
+3. Universalist vs particularist mindsets:
+   — Определения обоих
+   — Implications для восприятия коррупции
+
+4. Podcast 11.1 — Whistleblowing:
+   — Определение whistleblowing
+   — Moral trade-off между fairness и loyalty: как влияет на решение "blow the whistle"
+
+5. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"According to Alena Ledeneva, blat was common in the USSR primarily because:",
+               opts:["Soviet citizens were naturally corrupt","The shortage economy made it impossible to obtain goods through official channels, requiring personal connections","Soviet law explicitly permitted blat","The government encouraged gift-giving"],ans:1},
+              {q:"A 'universalist' mindset in relation to corruption means:",
+               opts:["Believing that rules should apply equally to everyone, regardless of personal relationships","Believing that personal relationships should take priority over formal rules","Accepting corruption as a normal part of life","Thinking corruption only exists in other countries"],ans:0},
+              {q:"Max Weber's 'ideal type' bureaucracy is characterised by:",
+               opts:["Personal relationships and flexible rules","Impersonal rules applied uniformly, clear hierarchy, and merit-based appointments","Maximum efficiency with minimum rules","Democratic decision-making by all employees"],ans:1},
+              {q:"Whistleblowing involves a moral trade-off between:",
+               opts:["Money and career","Fairness (revealing wrongdoing) and loyalty (to the organisation or colleagues)","Individual safety and public interest","Legal compliance and personal ethics"],ans:1}
+            ]
+          }
+        ]
+      },
+      {
+        label: "Week 4 — Nations & Integration",
+        days: [
+          {
+            n:12, title:"Nation, Nationalism & Identity", chips:["theory","quiz"],
+            goals:["Nation vs State vs Nation-state — точные определения","Primordialism vs Constructivism","Gellner И Anderson — книги, аргументы, сходства/различия","Nation-building: top-down и bottom-up методы","Social identity theory (Tajfel & Turner)"],
+            terms:[
+              {en:"Nation",ru:"Нация"},
+              {en:"State",ru:"Государство"},
+              {en:"Nation-state",ru:"Национальное государство"},
+              {en:"Primordialism",ru:"Примордиализм"},
+              {en:"Constructivism",ru:"Конструктивизм"},
+              {en:"Nation-building",ru:"Нациостроительство"},
+              {en:"Ingroup / Outgroup",ru:"Своя группа / чужая группа"},
+              {en:"Ethnicity",ru:"Этничность / этнос"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Nation, Nationalism & National Identity (Лекции 12.1–12.4 + Podcasts)
+
+1. Объясни на русском:
+   — Nation / State / Nation-state — определения и разница
+   — Primordialism: определение и объяснение
+   — Constructivism: определение и объяснение
+
+2. Constructivist thinkers (подробно!):
+   — Ernest Gellner: название книги, основные аргументы
+   — Benedict Anderson: название книги, основные аргументы
+   — Сходства и различия между Gellner и Anderson (важно для семинара!)
+
+3. Nation-building:
+   — Определение
+   — Top-down nation building: определение, методы + объяснение каждого
+   — Bottom-up nation building: определение, методы + объяснение каждого
+
+4. Психология национальной идентичности:
+   — Social identity theory (Henri Tajfel & John Turner): детали теории
+   — Ingroups и outgroups: определения
+   — Как теория объясняет существование национальных идентичностей
+   — Cultural expressions: symbols / rituals / historical narratives / media & arts — примеры
+
+5. Podcast 12.2:
+   — Ethnicity: определение + русское слово
+   — Nationality: определение + русское слово
+
+6. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"Benedict Anderson described nations as 'imagined communities' because:",
+               opts:["Nations were invented by governments","Members of a nation will never meet most fellow-members, yet feel a sense of community","Nations are fictional constructs with no real meaning","National identities are based on imagination rather than culture"],ans:1},
+              {q:"Ernest Gellner argued that nationalism:",
+               opts:["Has existed since ancient times","Was created by industrialisation and the need for a culturally homogeneous workforce","Is a natural expression of human tribal instincts","Was invented by colonial powers"],ans:1},
+              {q:"In Henri Tajfel's Social Identity Theory, 'ingroups' are:",
+               opts:["Groups that an individual does not belong to","Groups that an individual identifies with and feels part of","Groups with more than 100 members","Groups defined by the government"],ans:1},
+              {q:"'Top-down' nation-building refers to:",
+               opts:["Building infrastructure from top floors to ground floor","Nation-building driven by the state through policies such as standardised education and official languages","Nation-building that starts from local communities","Building national monuments"],ans:1}
+            ]
+          },
+          {
+            n:13, title:"Sovereignty, Soviet Nationalities & Integration", chips:["theory","quiz"],
+            goals:["Internal vs external sovereignty","Ethnic vs civic concept of nation","Korenizatsiia — что, когда, двойственность","Roland Grigor Suny — книга + аргумент","Legacies of Soviet nationalities policy"],
+            terms:[
+              {en:"Sovereignty",ru:"Суверенитет"},
+              {en:"Internal sovereignty",ru:"Внутренний суверенитет"},
+              {en:"External sovereignty",ru:"Внешний суверенитет"},
+              {en:"Territorial integrity",ru:"Территориальная целостность"},
+              {en:"Ethnic concept of nation",ru:"Этническая концепция нации"},
+              {en:"Civic concept of nation",ru:"Гражданская концепция нации"},
+              {en:"Korenizatsiia",ru:"Коренизация"},
+              {en:"National self-determination",ru:"Национальное самоопределение"}
+            ],
+            prompt:`Я студент KBTU, готовлюсь к финалу по Sociology.
+
+ТЕМА ДНЯ: Nation State, Sovereignty & Soviet Nationalities (Лекции 13.1–13.2 + Podcasts)
+
+1. Объясни на русском:
+   — Nation-state: его особенности
+   — Принципы международного права: inviolability of borders / territorial integrity / non-interference
+   — Internal sovereignty vs external sovereignty: определения
+   — Ethnic concept of nation vs civic concept of nation: объясни разницу
+
+2. Soviet nationalities (Lecture 13.2 + Podcast):
+   — Traditional view vs revisionist view — различные историографические взгляды на советскую политику
+   — Nationalism: определение
+   — National self-determination (NSD): определение
+   — Roland Grigor Suny: название книги, центральный аргумент
+   — Ситуация с национальными идентичностями в Российской Империи до 1917 года
+   — Советская система этнонациональной территориальной администрации: что это, почему большевики выбрали эту систему
+   — Korenizatsiia: что это, какие политики включала, двойственность, когда началась и закончилась
+   — Наследие советской национальной политики сегодня — перечисли
+
+3. European & Eurasian Integration (кратко):
+   — ECSC, EEC, EU: годы основания, страны-члены
+   — Single Market: год запуска, 4 freedoms
+   — EAEU: год основания, страны-члены
+   — CIS: когда создан, зачем
+   — Customs union: определение
+
+4. Дай 5 тестовых вопросов. После ответов проверь.`,
+            quiz:[
+              {q:"'Korenizatsiia' (indigenisation) in the Soviet Union involved:",
+               opts:["Forcing non-Russian peoples to adopt Russian culture","Promoting local languages, cultures, and cadres in non-Russian republics while simultaneously building Soviet identity","Collectivising agriculture in non-Russian regions","Suppressing all national identities in favour of Soviet identity"],ans:1},
+              {q:"The 'civic concept of the nation' defines membership based on:",
+               opts:["Ethnic origin and ancestry","Citizenship and shared political values, regardless of ethnicity","Language and religion","Geographical location"],ans:1},
+              {q:"'External sovereignty' means:",
+               opts:["A state's authority to govern its own territory without interference","A state's right to be free from interference by other states in its internal affairs","The power to make foreign policy","Control over borders and immigration"],ans:1},
+              {q:"According to Roland Grigor Suny, Soviet nationalities policy:",
+               opts:["Successfully eliminated all national identities","Paradoxically strengthened national identities by institutionalising ethnicity into the political system","Had no long-term effects on national identities","Only affected Russia"],ans:1}
+            ]
+          },
+          {
+            n:14, title:"Final Review — Mock Sociology Test", chips:["review","quiz","exam"],
+            goals:["Пройти пробный тест по всем темам (формат финала)","Проверить знание определений под давлением времени","Выявить последние слабые места","Повторить самые важные термины курса"],
+            terms:[
+              {en:"Social problem",ru:"Социальная проблема"},
+              {en:"Principal-agent model",ru:"Модель «принципал-агент»"},
+              {en:"Collective action problem",ru:"Проблема коллективных действий"},
+              {en:"Competitive authoritarianism",ru:"Конкурентный авторитаризм"},
+              {en:"Korenizatsiia",ru:"Коренизация"},
+              {en:"Moral disengagement",ru:"Моральное отстранение"},
+              {en:"Watchdog journalism",ru:"Журналистика-«сторожевой пёс»"},
+              {en:"Civil society",ru:"Гражданское общество"}
+            ],
+            prompt:`Я студент KBTU, завтра финальный тест по Sociology.
+
+ТЕМА ДНЯ: Пробный тест + финальное повторение
+
+1. Пробный тест (формат финала):
+   Задай мне 20 вопросов multiple choice по всем темам курса:
+   — Social Problems (2 вопроса)
+   — Social Stratification & Poverty (2 вопроса)
+   — Domestic Violence (2 вопроса)
+   — Political Regimes (2 вопроса)
+   — Liberal Democracy (2 вопроса)
+   — Civil Society (2 вопроса)
+   — Corruption I: Classification & Psychology (3 вопроса)
+   — Corruption II: Types & Collective Action (3 вопроса)
+   — Nation & Nationalism (2 вопроса)
+   Вопросы — на английском. Жди все мои ответы, потом дай результат.
+
+2. После проверки теста:
+   — Дай мне итоговую шпаргалку: 5 самых важных определений которые НУЖНО знать дословно
+   — Напомни про "open questions" которые могут быть на финале (collective action problem / Marc Howard / blat)
+
+Вопросы на английском, объяснения ошибок — на русском.`,
+            quiz:[
+              {q:"Which concept describes a situation where individual rational choices lead to collectively bad outcomes — used to explain systemic corruption?",
+               opts:["Gini coefficient","Collective action problem","Moral disengagement","Principal-agent model"],ans:1},
+              {q:"Transparency International's CPI measures:",
+               opts:["Actual levels of corruption detected","Perceived levels of public sector corruption","Number of corruption prosecutions","Bribery rates in private companies"],ans:1},
+              {q:"The 'cycle of abuse' explains why victims stay in abusive relationships because:",
+               opts:["Victims enjoy the abuse","The honeymoon phase gives victims hope that the abuser will change","Victims are afraid of the legal system","Abuse becomes normal after time"],ans:1},
+              {q:"V-Dem's four regime categories include all of the following EXCEPT:",
+               opts:["Liberal democracy","Electoral democracy","Electoral autocracy","Kleptocracy"],ans:3}
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "discrete",
+    name: "Discrete Math",
+    icon: "∑",
+    color: "#7c6af7",
+    colorDim: "rgba(124,106,247,.18)",
+    desc: "Induction · Combinatorics · Recurrences · CRT · Boolean · Automata",
+    stats: [{n:"14",l:"Days"},{n:"6",l:"Exam Topics"},{n:"40",l:"Total Points"},{n:"461",l:"Lecture Pages"}],
+    weeks:[
+      {
+        label:"Week 1 — Core Math",
+        days:[
+          {n:1,title:"Proof by Mathematical Induction",chips:["theory","practice","exam"],
+           goals:["Структура доказательства: база, шаг, вывод","Доказать суммарные формулы (∑k⁵ из нулевого варианта)","3+ задачи самостоятельно"],
+           terms:[{en:"Mathematical induction",ru:"Математическая индукция"},{en:"Base case",ru:"База индукции"},{en:"Inductive step",ru:"Шаг индукции"},{en:"Inductive hypothesis",ru:"Индукционное предположение"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures (Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Доказательство по математической индукции
+
+1. Объясни по-русски структуру доказательства по индукции (база, шаг, вывод). Шаблон.
+
+2. Покажи полное решение из нулевого варианта:
+   Доказать: ∀n ≥ 1: ∑(k=1 to n) k⁵ = (2n²+2n−1)(n+1)²n² / 12
+
+3. Дай 3 задачи нарастающей сложности, проверь мои решения.
+
+Теорию — на русском, задачи и решения — на английском.`,
+           quiz:[
+             {q:"In a proof by induction, what must be proved in the inductive step?",opts:["The base case P(1) is true","If P(k) is true, then P(k+1) must also be true","P(n) is true for all even n","The formula holds for n=2"],ans:1},
+             {q:"Why is the base case necessary in a proof by induction?",opts:["It proves the formula for all cases directly","It starts the chain: without it, the inductive step has nothing to 'step from'","It simplifies the algebra","It is required by the axioms of set theory"],ans:1},
+             {q:"When proving ∑k = n(n+1)/2, the inductive hypothesis assumes:",opts:["The sum equals n(n+1)/2 for n=1 only","The sum equals k(k+1)/2 for some arbitrary k ≥ 1","The sum is always odd","n must be even"],ans:1},
+             {q:"Strong induction differs from regular induction in that:",opts:["The base case is not needed","The inductive step assumes P(j) is true for ALL j ≤ k, not just P(k)","It only works for odd numbers","It requires two base cases"],ans:1}
+           ]
+          },
+          {n:2,title:"Combinatorics: Stars-and-Bars",chips:["theory","practice","exam"],
+           goals:["Formulas: P(n,r), C(n,r), Stars-and-Bars","Решить x₁+x₂+x₃+x₄=20","Inclusion-Exclusion Principle"],
+           terms:[{en:"Permutation",ru:"Перестановка"},{en:"Combination",ru:"Сочетание"},{en:"Stars-and-Bars",ru:"Метод звёзд и перегородок"},{en:"Inclusion-Exclusion",ru:"Включений-исключений"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures (Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Комбинаторика — Permutations, Combinations, Stars-and-Bars
+
+1. Объясни формулы: P(n,r), C(n,r), Stars-and-Bars, Inclusion-Exclusion
+
+2. Полное решение из нулевого варианта:
+   How many solutions: x₁+x₂+x₃+x₄=20, xᵢ ≥ 0?
+
+3. Дай 3 задачи в стиле KBTU, проверь решения.
+
+Теорию — на русском, задачи — на английском.`,
+           quiz:[
+             {q:"How many non-negative integer solutions does x₁+x₂+x₃=10 have?",opts:["C(10,2)=45","C(12,2)=66","C(10,3)=120","C(13,3)=286"],ans:1},
+             {q:"The Stars-and-Bars formula for distributing n identical items into k distinct bins (allowing empty bins) is:",opts:["C(n,k)","C(n+k-1, k-1)","n^k","k^n"],ans:1},
+             {q:"C(n,r) equals:",opts:["n! / r!","n! / (r!(n-r)!)","n × (n-1) × ... × (n-r+1)","r! × (n-r)!"],ans:1},
+             {q:"How many 4-digit PIN codes have no repeated digits?",opts:["10^4","P(10,4)=5040","C(10,4)=210","10×9×8=720"],ans:1}
+           ]
+          },
+          {n:3,title:"Recurrence Relations",chips:["theory","practice","exam"],
+           goals:["Линейные рекуррентности с постоянными коэффициентами","Чётные/нечётные подпоследовательности","Решить aₙ = aₙ₋₂/4 из нулевого варианта"],
+           terms:[{en:"Recurrence relation",ru:"Рекуррентное соотношение"},{en:"Characteristic equation",ru:"Характеристическое уравнение"},{en:"Closed-form solution",ru:"Решение в замкнутой форме"},{en:"Initial conditions",ru:"Начальные условия"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures (Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Рекуррентные соотношения
+
+1. Объясни метод характеристического уравнения и подход к aₙ = f(aₙ₋₂)
+
+2. Полное решение из нулевого варианта:
+   Solve: aₙ = aₙ₋₂/4, n≥2, a₀=1, a₁=0
+
+3. Дай 3 задачи в стиле KBTU, проверь решения.`,
+           quiz:[
+             {q:"For the recurrence aₙ = aₙ₋₂/4, what is the key observation about even and odd terms?",opts:["They are identical","They form two independent geometric sequences","They always sum to zero","They grow without bound"],ans:1},
+             {q:"The characteristic equation of aₙ = 5aₙ₋₁ − 6aₙ₋₂ is:",opts:["r²=5r-6","r=5-6r","r²-5r+6=0","r²+5r-6=0"],ans:2},
+             {q:"For a linear recurrence with characteristic roots r₁ ≠ r₂, the general solution is:",opts:["aₙ = A·r₁ⁿ","aₙ = (A+Bn)·r₁ⁿ","aₙ = A·r₁ⁿ + B·r₂ⁿ","aₙ = A·r₁ⁿ · B·r₂ⁿ"],ans:2},
+             {q:"If a₀=1 and aₙ=aₙ₋₂/4, what is a₄?",opts:["1/4","1/8","1/16","1/256"],ans:2}
+           ]
+          },
+          {n:4,title:"Chinese Remainder Theorem",chips:["theory","practice","exam"],
+           goals:["Модульная арифметика + modular inverse","CRT: условия применения + алгоритм","Решить систему 3 сравнений из нулевого варианта"],
+           terms:[{en:"Congruence",ru:"Сравнение по модулю"},{en:"Modular inverse",ru:"Обратный элемент по модулю"},{en:"Chinese Remainder Theorem",ru:"Китайская теорема об остатках"},{en:"Pairwise coprime",ru:"Попарно взаимно простые"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures (Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Chinese Remainder Theorem
+
+1. Объясни модульную арифметику, modular inverse, алгоритм CRT
+
+2. Полное решение из нулевого варианта:
+   5x≡8(mod13), 5x≡5(mod16), 3x≡3(mod25)
+
+3. Дай 2 задачи на CRT, проверь решения.`,
+           quiz:[
+             {q:"For CRT to apply, the moduli must be:",opts:["All prime","Pairwise coprime (gcd=1 for each pair)","All different","All greater than 10"],ans:1},
+             {q:"The modular inverse of 3 (mod 7) is:",opts:["3","4","5","6"],ans:2},
+             {q:"CRT guarantees that the solution x is unique modulo:",opts:["The largest modulus","The sum of all moduli","The product of all moduli","The LCM of all moduli"],ans:3},
+             {q:"To solve 5x≡8(mod13) for x, first find:",opts:["8/5","The inverse of 5 mod 13","The inverse of 8 mod 13","5 mod 8"],ans:1}
+           ]
+          },
+          {n:5,title:"Boolean Functions: Truth Table, DNF, CNF",chips:["theory","practice","exam"],
+           goals:["Все операторы: NOR(↓), XNOR(~), NOT, AND, OR","Построить таблицу истинности для составной функции","Получить DNF и CNF через эквивалентные преобразования"],
+           terms:[{en:"NOR (↓)",ru:"Стрелка Пирса (ИЛИ-НЕ)"},{en:"XNOR (~)",ru:"Эквивалентность"},{en:"DNF",ru:"ДДНФ (дизъюнктивная нормальная форма)"},{en:"CNF",ru:"КДНФ (конъюнктивная нормальная форма)"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures (Kalmurzayev B.S.).
+
+ТЕМА ДНЯ: Boolean Functions — Truth Tables, DNF, CNF
+
+1. Объясни все операторы: NOR(↓), XNOR(~), NOT, AND, OR, NAND — таблицы истинности
+
+2. Построй полную таблицу для f(x,y,z) = x ↓ ((y ~ z) ↓ x) (промежуточные столбцы!)
+
+3. Покажи DNF и CNF через эквивалентные преобразования
+
+4. Дай 1 новую функцию — проверь таблицу + DNF/CNF.`,
+           quiz:[
+             {q:"The NOR operator (x↓y) equals:",opts:["¬(x∧y)","¬(x∨y)","x⊕y","¬x∧¬y"],ans:1},
+             {q:"In DNF, the formula is written as:",opts:["A conjunction of disjunctions","A disjunction of conjunctions (minterm sum)","A single negated clause","A conjunction of all variables"],ans:1},
+             {q:"XNOR (x~y) outputs 1 when:",opts:["x and y have different values","x and y have the same value","x is 1","y is 0"],ans:1},
+             {q:"To build DNF from a truth table, you take:",opts:["Rows where the function outputs 0","Rows where the function outputs 1, forming a conjunction for each row","All rows","The complement of the function"],ans:1}
+           ]
+          }
+        ]
+      },
+      {
+        label:"Week 2 — Automata + Review",
+        days:[
+          {n:6,title:"Boolean: PDNF, PCNF & Zhegalkin (ANF)",chips:["theory","practice","exam"],
+           goals:["PDNF и PCNF из таблицы истинности","Полином Жегалкина — метод треугольника","Полное решение Q5 из нулевого варианта"],
+           terms:[{en:"PDNF / PCNF",ru:"СДНФ / СКНФ"},{en:"Minterm / Maxterm",ru:"Минтерм / Макстерм"},{en:"Zhegalkin polynomial",ru:"Полином Жегалкина"},{en:"ANF (Algebraic Normal Form)",ru:"Алгебраическая нормальная форма"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures.
+
+ТЕМА ДНЯ: PDNF, PCNF и Полином Жегалкина (ANF)
+
+1. Объясни разницу PDNF vs DNF, PCNF vs CNF. Как строить из таблицы.
+2. Полином Жегалкина: что это, метод треугольника Паскаля.
+3. Полное решение Q5 для x↓((y~z)↓x): (c) PDNF+PCNF, (d) ANF.
+4. Дай 1 функцию — попроси найти PDNF, PCNF и ANF. Проверь.`,
+           quiz:[
+             {q:"PDNF (Perfect DNF) differs from regular DNF in that:",opts:["PDNF is shorter","Each minterm in PDNF contains ALL variables of the function","PDNF uses only AND gates","PDNF is always unique but DNF is not"],ans:1},
+             {q:"The Zhegalkin polynomial uses which operations?",opts:["AND, OR, NOT","AND, XOR (and constant 1)","OR, NOT","AND, XNOR"],ans:1},
+             {q:"In PCNF, each clause (maxterm) contains:",opts:["Only the variables set to 0","All variables of the function (each either positive or negative)","Only two variables","The negation of each minterm"],ans:1},
+             {q:"To build PCNF from a truth table, you select rows where:",opts:["f = 1","f = 0, forming a disjunction with negated literals for each row","All variables are 1","The function is undefined"],ans:1}
+           ]
+          },
+          {n:7,title:"Regular Expressions",chips:["theory","practice","exam"],
+           goals:["Регулярные операции: ∪, ·, *","Составлять regex для языков с несколькими ограничениями","Regex для L из нулевого варианта"],
+           terms:[{en:"Regular language",ru:"Регулярный язык"},{en:"Regular expression",ru:"Регулярное выражение"},{en:"Kleene star (*)",ru:"Звезда Клини"},{en:"Concatenation",ru:"Конкатенация"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures.
+
+ТЕМА ДНЯ: Regular Languages & Regular Expressions
+
+1. Объясни синтаксис regex: ∪, ·, * — с примерами
+2. Решение Q6a: L={ω∈{0,1}*: ω начинается с 011, #₀(ω) чётно} → найди r_L
+3. Дай 3 языка — попроси написать regex. Проверь.`,
+           quiz:[
+             {q:"Which regular expression represents all binary strings that start with '1'?",opts:["(0+1)*1","1(0+1)*","(1+0)*","1*0*"],ans:1},
+             {q:"The Kleene star (r*) means:",opts:["r appears exactly once","r appears one or more times","r appears zero or more times","r is optional (0 or 1 times)"],ans:2},
+             {q:"The language {strings with even number of 0s} over {0,1} can be expressed as:",opts:["(1*01*0)*1*","0*","(0+1)*","1*0*1*"],ans:0},
+             {q:"For L = {words beginning with 011 AND having even number of 0s}, the regex starts with:",opts:["(0+1)*011","011...","0*(11)*","1*011"],ans:1}
+           ]
+          },
+          {n:8,title:"NFA — Nondeterministic Finite Automata",chips:["theory","practice","exam"],
+           goals:["Формальное определение NFA: (Q,Σ,δ,q₀,F)","NFA vs DFA — недетерминизм, ε-transitions","NFA для L из нулевого варианта"],
+           terms:[{en:"NFA",ru:"Недетерминированный конечный автомат"},{en:"ε-transition",ru:"Эпсилон-переход"},{en:"Transition function",ru:"Функция переходов"},{en:"Accepting state",ru:"Принимающее состояние"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures.
+
+ТЕМА ДНЯ: NFA
+
+1. Формальное определение NFA и отличие от DFA
+2. Построй NFA для Q6b: L={ω∈{0,1}*: начинается с 011, #₀(ω) чётно}
+   Таблица переходов + описание состояний словами
+3. Дай 2 языка — построй NFA. Проверь.`,
+           quiz:[
+             {q:"In an NFA, when in state q reading symbol a, the machine can:",opts:["Move to exactly one next state","Move to any subset of states (including empty set)","Only stay in the current state","Always reject the input"],ans:1},
+             {q:"An NFA accepts a string if:",opts:["All computation paths end in accepting states","At least one computation path ends in an accepting state","The majority of paths accept","The first path accepts"],ans:1},
+             {q:"ε-transitions in an NFA allow the machine to:",opts:["Read two symbols at once","Change state without consuming any input symbol","Reject the current symbol","Loop indefinitely"],ans:1},
+             {q:"Every NFA has an equivalent:",opts:["Only a regular expression","A DFA (by subset construction)","A context-free grammar","A Turing machine but not a DFA"],ans:1}
+           ]
+          },
+          {n:9,title:"DFA — Deterministic Finite Automata",chips:["theory","practice","exam"],
+           goals:["Строить DFA напрямую или через subset construction","Dead/trap states","Решить Q6c (5 баллов — самая дорогая часть!)"],
+           terms:[{en:"DFA",ru:"Детерминированный конечный автомат"},{en:"Subset construction",ru:"Конструкция подмножества"},{en:"Dead/trap state",ru:"Тупиковое состояние"},{en:"Transition table",ru:"Таблица переходов"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures.
+
+ТЕМА ДНЯ: DFA (самая дорогая часть — 5 баллов!)
+
+1. Formal definition DFA, subset construction NFA→DFA, dead states
+2. Полное решение Q6c: L={ω∈{0,1}*: начинается с 011, #₀(ω) чётно}
+   Анализ состояний → таблица переходов → описание каждого состояния
+3. Дай 2 задачи на DFA. Проверь.`,
+           quiz:[
+             {q:"In a DFA, from any state reading any symbol, the machine moves to:",opts:["Any number of states","Exactly one next state","Zero or one states","A random state"],ans:1},
+             {q:"A 'dead' (trap) state in a DFA is:",opts:["A state with no outgoing transitions","A non-accepting state from which no accepting state can be reached","The initial state","Any state not in the final states"],ans:1},
+             {q:"Subset construction converts an NFA with n states into a DFA with at most:",opts:["n states","n² states","2ⁿ states","n! states"],ans:2},
+             {q:"For L = {strings starting with 011 AND even number of 0s}, how many 'meaningful' states does the DFA need minimum?",opts:["2","4","6","8"],ans:2}
+           ]
+          },
+          {n:10,title:"Predicate Logic & Graph Theory",chips:["theory","review"],
+           goals:["Кванторы ∀, ∃ и их отрицания","Формализовать утверждения на языке предикатной логики","Основные понятия теории графов"],
+           terms:[{en:"Predicate",ru:"Предикат"},{en:"Universal quantifier ∀",ru:"Квантор всеобщности"},{en:"Existential quantifier ∃",ru:"Квантор существования"},{en:"Free/bound variable",ru:"Свободная/связанная переменная"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures.
+
+ТЕМА ДНЯ: Predicate Logic + Graph Theory (повторение)
+
+ЧАСТЬ 1 — Предикатная логика:
+1. Кванторы ∀, ∃, их отрицания. Свободные и связанные переменные.
+2. 4 задачи: переведи утверждение → формула и обратно. Проверь.
+
+ЧАСТЬ 2 — Теория графов:
+3. Кратко: степень вершины, связность, пути, циклы, деревья, directed/undirected.
+4. 2 задачи в стиле экзамена. Проверь.`,
+           quiz:[
+             {q:"The negation of ∀x P(x) is:",opts:["∀x ¬P(x)","∃x ¬P(x)","¬∀x ¬P(x)","∃x P(x)"],ans:1},
+             {q:"In 'For all x, if x is even then x²  is even', the variable x is:",opts:["Free","Bound by ∀","Both free and bound","A constant"],ans:1},
+             {q:"In a simple undirected graph with 5 vertices, the maximum number of edges is:",opts:["5","10","15","20"],ans:1},
+             {q:"A tree with n vertices has exactly:",opts:["n edges","n-1 edges","n+1 edges","n² edges"],ans:1}
+           ]
+          },
+          {n:11,title:"Set Theory, Relations & Generating Functions",chips:["theory","review"],
+           goals:["Теория множеств, отношения эквивалентности","Производящие функции как инструмент","Закрыть тёмные пятна"],
+           terms:[{en:"Equivalence relation",ru:"Отношение эквивалентности"},{en:"Partial order",ru:"Частичный порядок"},{en:"Generating function",ru:"Производящая функция"},{en:"Power set",ru:"Булеан (множество подмножеств)"}],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures.
+
+ТЕМА ДНЯ: Set Theory, Relations, Generating Functions
+
+ЧАСТЬ 1 — Set Theory & Relations:
+1. Операции над множествами, мощность, декартово произведение
+2. Типы отношений: reflexive, symmetric, transitive, equivalence, partial order
+3. 3 задачи в стиле KBTU. Проверь.
+
+ЧАСТЬ 2 — Generating Functions:
+4. Что такое ordinary generating function, как использовать для рекуррентностей
+5. Покажи 1 пример.`,
+           quiz:[
+             {q:"An equivalence relation must be:",opts:["Reflexive only","Reflexive, symmetric, and transitive","Reflexive and antisymmetric","Symmetric and transitive only"],ans:1},
+             {q:"The power set of {a, b, c} has how many elements?",opts:["3","6","8","9"],ans:2},
+             {q:"A partial order is a relation that is:",opts:["Reflexive, symmetric, and transitive","Reflexive, antisymmetric, and transitive","Symmetric and transitive only","Antisymmetric and symmetric"],ans:1},
+             {q:"The generating function for the sequence 1,1,1,1,... is:",opts:["1/(1-x)","1/(1+x)","e^x","1-x"],ans:0}
+           ]
+          },
+          {n:12,title:"Full Review — Speed Round",chips:["review","practice"],
+           goals:["По 2 задачи на каждую из 6 тем","Выявить слабые места","Тренировать скорость (120 мин = ~20 мин на задачу)"],
+           terms:[],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures.
+
+ТЕМА ДНЯ: Speed Review — все темы
+
+Задай по 1 задаче на каждую тему. Жди моих ответов:
+1. Mathematical Induction (доказать формулу суммы)
+2. Combinatorics — Stars-and-Bars (подсчёт решений)
+3. Recurrence (замкнутая форма)
+4. CRT (система сравнений)
+5. Boolean (таблица + DNF/CNF + ANF)
+6. Automata (regex + NFA + DFA для языка)
+
+После каждого ответа: верно/неверно + правильное решение.
+В конце: список тем где были ошибки.`,
+           quiz:[
+             {q:"Stars-and-Bars formula C(n+k-1, k-1) gives the number of:",opts:["Permutations of n items","Non-negative integer solutions to x₁+...+xₖ=n","Subsets of size k","Arrangements with repetition"],ans:1},
+             {q:"CRT requires moduli to be pairwise coprime. What does this mean?",opts:["All moduli are prime","gcd(mᵢ, mⱼ)=1 for every pair i≠j","All moduli are different","The moduli sum to a prime"],ans:1},
+             {q:"The Zhegalkin polynomial (ANF) uses which two operations?",opts:["AND and OR","AND and XOR","OR and NOT","NAND and NOR"],ans:1},
+             {q:"Every NFA can be converted to a DFA using:",opts:["CYK algorithm","Subset construction","Pumping lemma","Kleene's theorem"],ans:1}
+           ]
+          },
+          {n:13,title:"Mock Exam — Full Paper",chips:["exam"],
+           goals:["Пробный экзамен за 120 минут","Разобрать все ошибки"],
+           terms:[],
+           prompt:`Я студент KBTU, готовлюсь к финалу по Discrete Structures.
+
+ТЕМА ДНЯ: Пробный экзамен (Mock Exam)
+
+Составь полный вариант в формате нулевого:
+
+1. (5 pts) Induction: доказать формулу суммы (не ∑k⁵)
+2. (5 pts) Combinatorics: x₁+x₂+x₃+x₄=N с ограничениями
+3. (5 pts) Recurrence relation с начальными условиями
+4. (5 pts) Система 3 сравнений по CRT
+5. (10 pts) Boolean функция: (a)таблица (b)DNF/CNF (c)PDNF/PCNF (d)ANF
+6. (10 pts) Язык L: (a)regex (b)NFA (c)DFA
+
+Жди мои ответы — потом проверь пошагово, дай баллы (из 40), объясни ошибки.`,
+           quiz:[
+             {q:"Which part of the exam is worth the most points?",opts:["Induction (Q1)","CRT (Q4)","Boolean functions (Q5) and Automata (Q6) — 10 pts each","Combinatorics (Q2)"],ans:2},
+             {q:"For a DFA accepting 'binary strings starting with 011 AND even number of 0s', how does the state need to track two conditions simultaneously?",opts:["It only needs to track the prefix","It needs states encoding both the prefix status AND the parity of 0s seen so far","It only needs to count zeros","It needs to count all characters"],ans:1},
+             {q:"In the ANF/Zhegalkin polynomial, what is the coefficient of a monomial?",opts:["A real number","Either 0 or 1 (operations are mod 2)","Any integer","A Boolean variable"],ans:1},
+             {q:"What should you do FIRST when solving a system of congruences with CRT?",opts:["Find the product of all moduli","Verify that all moduli are pairwise coprime","Compute the individual CRT components","Add all equations together"],ans:1}
+           ]
+          },
+          {n:14,title:"Final Day — Cheat Sheet & Last Review",chips:["review","exam"],
+           goals:["Получить шпаргалку всех формул","Повторить алгоритмы решения","Отдохнуть перед экзаменом"],
+           terms:[],
+           prompt:`Я студент KBTU, завтра финал по Discrete Structures.
+
+ТЕМА ДНЯ: Шпаргалка + финальное повторение
+
+1. Составь cheat sheet — алгоритм решения каждой задачи:
+   — Induction: 3-шаговый шаблон
+   — Stars-and-Bars: формула + когда применять
+   — Recurrences: метод характеристического уравнения — шаги
+   — CRT: пошаговый алгоритм (5 шагов)
+   — Boolean → ANF: алгоритм Жегалкина
+   — DFA: стратегия выбора состояний
+
+2. Задай мне 6 быстрых вопросов (по 1 на тему). Я отвечаю кратко, ты — верно/неверно.
+
+3. Как распределить 120 минут по задачам?
+
+Отвечай на русском.`,
+           quiz:[
+             {q:"How should you optimally distribute 120 minutes across Q1-Q6?",opts:["20 min each for all 6","~10 min for Q1-Q4 (5pts each), ~25 min each for Q5 and Q6 (10pts each)","All time on Q5 and Q6","50 min on induction, 70 on the rest"],ans:1},
+             {q:"The Kleene star r* accepts strings of length:",opts:["1 or more","Exactly 1","0 or more (including empty string)","Only even length"],ans:2},
+             {q:"To prove P(n) by induction for n≥1, you need:",opts:["Only prove P(1)","Only prove the inductive step","Prove P(1) (base) AND prove P(k)⟹P(k+1) (step)","Prove P(n) for n=1,2,3 and claim the pattern holds"],ans:2},
+             {q:"In modular arithmetic, the inverse of a mod n exists if and only if:",opts:["a < n","gcd(a,n) = 1","a is prime","n is prime"],ans:1}
+           ]
+          }
+        ]
+      }
+    ]
+  }
+];
+
+// ─── RENDER ──────────────────────────────────────────────────────────
+let currentSubject = 0;
+
+function renderNav(){
+  const tabs = document.getElementById('subjectTabs');
+  tabs.innerHTML = SUBJECTS.map((s,i)=>`
+    <button class="stab ${i===currentSubject?'active':''}"
+      style="--sa-color:${s.color}"
+      onclick="switchSubject(${i})">${s.icon} ${s.name}</button>
+  `).join('');
+}
+
+function switchSubject(i){
+  currentSubject = i;
+  renderNav();
+  renderApp();
+}
+
+function renderApp(){
+  const s = SUBJECTS[currentSubject];
+  document.documentElement.style.setProperty('--sa-color', s.color);
+  document.documentElement.style.setProperty('--sa-color-dim', s.colorDim);
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="hero">
+      <div class="subject-badge" style="color:${s.color};border-color:${s.colorDim};background:${s.colorDim}">
+        ${s.icon} ${s.name.toUpperCase()}
+      </div>
+      <h1>14-Day <em style="color:${s.color}">Exam Prep</em><br>Study Plan</h1>
+      <p class="desc">${s.desc}</p>
+      <div class="meta-row">
+        ${s.stats.map(m=>`<div class="meta-item"><div class="num" style="color:${s.color}">${m.n}</div><div class="lbl">${m.l}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="container">
+      ${s.weeks.map(w=>`
+        <div class="week-sep">${w.label}</div>
+        ${w.days.map(d=>renderDay(d,s)).join('')}
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderDay(d, s){
+  const chipMap = {theory:'chip-t',practice:'chip-p',review:'chip-q',quiz:'chip-q',exam:'chip-e'};
+  const chipLabels = {theory:'Теория',practice:'Практика',review:'Повторение',quiz:'Квиз',exam:'Экзамен'};
+  const chipsHtml = d.chips.map(c=>`<span class="chip ${chipMap[c]||'chip-t'}">${chipLabels[c]||c}</span>`).join('');
+
+  const termsHtml = d.terms.length ? `
+    <div class="sec-label">Ключевые термины</div>
+    <div class="terms-grid">
+      ${d.terms.map(t=>`<div class="term-row"><span class="term-en">${t.en}</span><span class="term-ru">${t.ru}</span></div>`).join('')}
+    </div>
+  ` : '';
+
+  const quizHtml = d.quiz && d.quiz.length ? `
+    <div class="sec-label">Мини-квиз (${d.quiz.length} вопроса)</div>
+    <div class="quiz-block">
+      ${d.quiz.map((q,qi)=>`
+        <div class="quiz-q" id="qq_${s.id}_${d.n}_${qi}">
+          <div class="q-text">${qi+1}. ${q.q}</div>
+          <div class="quiz-options">
+            ${q.opts.map((o,oi)=>`
+              <div class="q-opt" onclick="answerQ('${s.id}',${d.n},${qi},${oi},${q.ans})">
+                <span class="q-opt-letter">${['A','B','C','D'][oi]}</span>
+                <span>${o}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  return `
+    <div class="day-card" id="day_${s.id}_${d.n}">
+      <div class="day-header" onclick="toggleDay('${s.id}',${d.n})">
+        <div class="day-num">DAY ${String(d.n).padStart(2,'0')}</div>
+        <div class="day-info">
+          <div class="day-title">${d.title}</div>
+          <div class="chips">${chipsHtml}</div>
+        </div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="day-body">
+        <div class="sec-label">Цели дня</div>
+        <ul class="goals-list">${d.goals.map(g=>`<li>${g}</li>`).join('')}</ul>
+        ${termsHtml}
+        <div class="sec-label">Промпт — скопируй и отправь Claude</div>
+        <div class="prompt-wrap">
+          <div class="prompt-box" id="pb_${s.id}_${d.n}">${d.prompt}</div>
+          <button class="copy-btn" onclick="copyPrompt('${s.id}',${d.n},this)">COPY</button>
+        </div>
+        ${quizHtml}
+        <div class="action-row">
+          <button class="btn-sm btn-done" onclick="markDone('${s.id}',${d.n})">✓ Выполнено</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleDay(sid, n){
+  const el = document.getElementById(`day_${sid}_${n}`);
+  el.classList.toggle('open');
+}
+
+function copyPrompt(sid, n, btn){
+  const box = document.getElementById(`pb_${sid}_${n}`);
+  navigator.clipboard.writeText(box.innerText).then(()=>{
+    btn.textContent = 'COPIED!';
+    btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='COPY';btn.classList.remove('ok');},2000);
+  });
+}
+
+function answerQ(sid, dn, qi, chosen, correct){
+  const container = document.getElementById(`qq_${sid}_${dn}_${qi}`);
+  const opts = container.querySelectorAll('.q-opt');
+  opts.forEach((o,i)=>{
+    o.style.pointerEvents='none';
+    if(i===correct) o.classList.add(chosen===correct?'correct':'reveal');
+    else if(i===chosen) o.classList.add('wrong');
+  });
+}
+
+function markDone(sid, n){
+  const el = document.getElementById(`day_${sid}_${n}`);
+  el.classList.toggle('done');
+  if(el.classList.contains('done') && el.classList.contains('open'))
+    el.classList.remove('open');
+}
+
+// init
+renderNav();
+renderApp();
+</script>
+</body>
+</html>
