@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STUDIO | 2026</title>
+<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+<link href="[https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap](https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap)" rel="stylesheet">
+<style>
+  :root {
+    --bg: #030303;
+    --text: #F2F2F2;
+    --accent: #FFFFFF;
+    --dim: #555555;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--bg);
+  }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .noise {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+  }
+
+  a, button {
+    color: inherit;
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .serif {
+    font-family: 'Playfair Display', serif;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 2vw 4vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    mix-blend-mode: difference;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  .menu-btn {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 4vw;
+    position: relative;
+  }
+
+  .hero-title {
+    font-size: clamp(4rem, 12vw, 15rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+    z-index: 2;
+    mix-blend-mode: difference;
+  }
+
+  .hero-title span {
+    display: block;
+    overflow: hidden;
+  }
+
+  .hero-title span i {
+    display: block;
+    font-style: italic;
+    transform: translateY(100%);
+    animation: revealUp 1.2s var(--ease-out-expo) forwards;
+  }
+
+  .hero-title span:nth-child(2) i {
+    animation-delay: 0.2s;
+    text-align: right;
+  }
+
+  .hero-img-wrapper {
+    position: absolute;
+    top: 20%;
+    right: 15%;
+    width: 35vw;
+    height: 60vh;
+    overflow: hidden;
+    z-index: 1;
+    clip-path: inset(100% 0 0 0);
+    animation: revealImg 1.5s 0.4s var(--ease-out-expo) forwards;
+  }
+
+  .hero-img {
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+    filter: grayscale(100%);
+  }
+
+  .marquee {
+    position: absolute;
+    bottom: 4vw;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 1vw 0;
+  }
+
+  .marquee-content {
+    display: inline-block;
+    animation: scroll 20s linear infinite;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--dim);
+  }
+
+  .section {
+    padding: 15vw 4vw;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 5vw, 4rem);
+    margin-bottom: 6vw;
+    font-weight: 400;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 30vw;
+    gap: 1vw;
+  }
+
+  .bento-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #111;
+  }
+
+  .bento-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+  .bento-item:nth-child(2) { grid-column: span 2; grid-row: span 1; }
+  .bento-item:nth-child(3) { grid-column: span 1; grid-row: span 1; }
+  .bento-item:nth-child(4) { grid-column: span 1; grid-row: span 1; }
+
+  .bento-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.1);
+    transition: transform 1s var(--ease-out-expo), filter 1s;
+  }
+
+  .bento-item:hover .bento-img {
+    transform: scale(1.05);
+    filter: grayscale(0%) contrast(1);
+  }
+
+  .bento-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  .bento-item:hover .bento-overlay {
+    opacity: 1;
+  }
+
+  .bento-tag {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    padding: 0.5vw 1vw;
+    border-radius: 50px;
+    align-self: flex-start;
+  }
+
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .service-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3vw 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    transition: padding 0.5s var(--ease-out-expo), color 0.3s;
+  }
+
+  .service-row:hover {
+    padding-left: 2vw;
+    padding-right: 2vw;
+    color: var(--dim);
+  }
+
+  .service-name {
+    font-size: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  .service-price {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 200;
+    font-size: 1.2rem;
+  }
+
+  .huge-cta {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .huge-cta h2 {
+    font-size: clamp(3rem, 10vw, 12rem);
+    line-height: 1;
+    text-transform: uppercase;
+    margin-bottom: 2vw;
+  }
+
+  .magnetic-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: transform 0.2s;
+  }
+
+  footer {
+    padding: 2vw 4vw;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .reveal-elem {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s var(--ease-out-expo), transform 1s var(--ease-out-expo);
+  }
+
+  .reveal-elem.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes revealUp {
+    to { transform: translateY(0); }
+  }
+
+  @keyframes revealImg {
+    to { clip-path: inset(0 0 0 0); }
+  }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @media (max-width: 768px) {
+    .bento-grid {
+      grid-template-columns: 1fr;
+      grid-auto-rows: 60vw;
+    }
+    .bento-item:nth-child(n) {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+    .hero-img-wrapper {
+      width: 80vw;
+      top: 30%;
+      right: 10%;
+    }
+    .magnetic-btn {
+      width: 100px;
+      height: 100px;
+      font-size: 0.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="noise"></div>
+
+  <nav>
+    <a href="#" class="logo">St.</a>
+    <button class="menu-btn">Menu</button>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-img-wrapper">
+      <img src="https://images.unsplash.com/photo-1604004555489-723a93d6ce74?auto=format&fit=crop&q=80](https://images.unsplash.com/photo-1604004555489-723a93d6ce74?auto=format&fit=crop&q=80)" alt="Editorial" class="hero-img" data-speed="0.1">
+    </div>
+    <h1 class="hero-title serif">
+      <span><i>Вне</i></span>
+      <span><i>Времени</i></span>
+    </h1>
+    
+    <div class="marquee">
+      <div class="marquee-content">
+        ПОРТРЕТ — СВАДЬБА — КОММЕРЦИЯ — ПОРТРЕТ — СВАДЬБА — КОММЕРЦИЯ — ПОРТРЕТ — СВАДЬБА — КОММЕРЦИЯ — ПОРТРЕТ — СВАДЬБА — КОММЕРЦИЯ — 
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title serif reveal-elem">Визуальный<br>Нарратив</h2>
+    <div class="bento-grid">
+      <div class="bento-item reveal-elem">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80](https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80)" alt="Work 1" class="bento-img">
+        <div class="bento-overlay">
+          <span class="bento-tag">Портрет</span>
+          <h3 class="serif">Характер и свет</h3>
+        </div>
+      </div>
+      <div class="bento-item reveal-elem" style="transition-delay: 0.1s;">
+        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80](https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80)" alt="Work 2" class="bento-img">
+        <div class="bento-overlay">
+          <span class="bento-tag">Кампейн</span>
+          <h3 class="serif">Эстетика бренда</h3>
+        </div>
+      </div>
+      <div class="bento-item reveal-elem" style="transition-delay: 0.2s;">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80](https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80)" alt="Work 3" class="bento-img">
+        <div class="bento-overlay">
+          <span class="bento-tag">Свадьба</span>
+          <h3 class="serif">Честность момента</h3>
+        </div>
+      </div>
+      <div class="bento-item reveal-elem" style="transition-delay: 0.3s;">
+        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80](https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&q=80)" alt="Work 4" class="bento-img">
+        <div class="bento-overlay">
+          <span class="bento-tag">Студия</span>
+          <h3 class="serif">Форма</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title serif reveal-elem">Процесс</h2>
+    <div class="services-list">
+      <a href="#" class="service-row reveal-elem">
+        <span class="service-name serif">Основа</span>
+        <span class="service-price">от 50.000 ₸</span>
+      </a>
+      <a href="#" class="service-row reveal-elem">
+        <span class="service-name serif">Концепт</span>
+        <span class="service-price">от 90.000 ₸</span>
+      </a>
+      <a href="#" class="service-row reveal-elem">
+        <span class="service-name serif">Продакшн</span>
+        <span class="service-price">от 150.000 ₸</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="huge-cta">
+    <h2 class="serif reveal-elem">Создать</h2>
+    <a href="#" class="magnetic-btn reveal-elem" id="magnetic">Booking</a>
+  </section>
+
+  <footer>
+    <span>© 2026 Studio.</span>
+    <span>Almaty, KZ</span>
+  </footer>
+
+  <script>
+    const magneticBtn = document.getElementById('magnetic');
+    magneticBtn.addEventListener('mousemove', (e) => {
+      const rect = magneticBtn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      magneticBtn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+    });
+    
+    magneticBtn.addEventListener('mouseleave', () => {
+      magneticBtn.style.transform = `translate(0px, 0px)`;
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal-elem').forEach(elem => observer.observe(elem));
+
+    const heroImg = document.querySelector('.hero-img');
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      heroImg.style.transform = `translateY(${scrollY * 0.15}px)`;
+    });
+  </script>
+</body>
+</html>

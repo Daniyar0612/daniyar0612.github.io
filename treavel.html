@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Турагентство | Путешествия начинаются сегодня</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-light: #F5FBFF;
+    --primary: #2D9CDB;
+    --secondary: #1ABC9C;
+    --accent: #F2C94C;
+    --text-dark: #1B2B40;
+    --text-muted: #5A7184;
+    --white: #FFFFFF;
+    --gradient-btn: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --gradient-overlay: linear-gradient(180deg, rgba(45, 156, 219, 0.4) 0%, rgba(26, 188, 156, 0.1) 100%);
+    --shadow-sm: 0 4px 12px rgba(27, 43, 64, 0.08);
+    --shadow-md: 0 12px 24px rgba(27, 43, 64, 0.12);
+    --shadow-hover: 0 20px 40px rgba(45, 156, 219, 0.15);
+    --radius: 20px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--bg-light);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  h1, h2, h3, h4, .logo {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+  }
+
+  .btn-primary {
+    background: var(--gradient-btn);
+    color: var(--white);
+    box-shadow: 0 8px 16px rgba(45, 156, 219, 0.25);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(45, 156, 219, 0.35);
+  }
+
+  .btn-outline {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    border: 2px solid var(--white);
+    backdrop-filter: blur(4px);
+  }
+
+  .btn-outline:hover {
+    background: var(--white);
+    color: var(--primary);
+  }
+
+  .btn-accent {
+    background: var(--accent);
+    color: var(--text-dark);
+  }
+
+  .btn-accent:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(242, 201, 76, 0.4);
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 24px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    transition: var(--transition);
+  }
+
+  .navbar.scrolled {
+    background: var(--white);
+    padding: 16px 5%;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s;
+    z-index: 1002;
+  }
+
+  .navbar.scrolled .logo,
+  .navbar.menu-open-nav .logo {
+    color: var(--primary);
+  }
+
+  .nav-menu-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+  }
+
+  .nav-links a {
+    color: var(--white);
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  .navbar.scrolled .nav-links a {
+    color: var(--text-dark);
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover::after, .nav-links a.active::after {
+    width: 100%;
+  }
+
+  .mobile-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--white);
+    z-index: 1002;
+    padding: 8px;
+  }
+
+  .navbar.scrolled .mobile-toggle,
+  .navbar.menu-open-nav .mobile-toggle {
+    color: var(--text-dark);
+  }
+
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 5% 60px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-overlay);
+    z-index: -1;
+  }
+
+  .hero-content {
+    text-align: center;
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 24px;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 48px;
+  }
+
+  .hero-search {
+    background: var(--white);
+    padding: 24px;
+    border-radius: var(--radius);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    gap: 16px;
+    box-shadow: var(--shadow-md);
+    align-items: end;
+    width: 100%;
+  }
+
+  .search-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .search-group label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .search-group input, .search-group select {
+    padding: 12px 16px;
+    border: 1px solid #E5E9F2;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+    background: var(--white);
+  }
+
+  .search-group input:focus, .search-group select:focus {
+    border-color: var(--primary);
+  }
+
+  .section {
+    padding: 100px 5%;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .section-header h2 {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    margin-bottom: 16px;
+  }
+
+  .section-header p {
+    color: var(--text-muted);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+
+  .dest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+  }
+
+  .dest-card {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    height: 400px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    display: block;
+  }
+
+  .dest-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .dest-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .dest-card:hover .dest-img {
+    transform: scale(1.1);
+  }
+
+  .dest-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 24px;
+    background: linear-gradient(to top, rgba(27,43,64,0.9) 0%, rgba(27,43,64,0) 100%);
+    color: var(--white);
+  }
+
+  .dest-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+
+  .dest-price {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .deals-scroll {
+    display: flex;
+    gap: 30px;
+    overflow-x: auto;
+    padding-bottom: 40px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .deal-card {
+    flex: 0 0 350px;
+    scroll-snap-align: start;
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+
+  .deal-img-wrapper {
+    height: 220px;
+    position: relative;
+  }
+
+  .deal-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .deal-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #EB5757;
+    color: var(--white);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .deal-content {
+    padding: 24px;
+  }
+
+  .deal-title {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+
+  .deal-prices {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .price-new {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .price-old {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .deal-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  .adv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+  }
+
+  .adv-card {
+    background: var(--white);
+    padding: 40px 30px;
+    border-radius: var(--radius);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+  }
+
+  .adv-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .adv-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 24px;
+    background: var(--bg-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+  }
+
+  .adv-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .form-section {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    padding: 100px 5%;
+    color: var(--white);
+  }
+
+  .lead-form-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 60px;
+    color: var(--text-dark);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .lead-form-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .lead-form-header h2 {
+    font-size: clamp(1.75rem, 4vw, 2rem);
+    margin-bottom: 8px;
+  }
+
+  .lead-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .lead-grid .search-group.full {
+    grid-column: 1 / -1;
+  }
+
+  .lead-form-wrapper .btn {
+    width: 100%;
+    padding: 20px;
+    font-size: 1.125rem;
+  }
+
+  .reviews-carousel {
+    display: flex;
+    gap: 30px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 20px;
+  }
+
+  .review-card {
+    flex: 0 0 400px;
+    scroll-snap-align: center;
+    background: var(--white);
+    padding: 40px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .review-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .reviewer-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .review-stars {
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .review-text {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  footer {
+    background: var(--text-dark);
+    color: var(--white);
+    padding: 60px 5% 30px;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+  }
+
+  .footer-col h4 {
+    font-size: 1.25rem;
+    margin-bottom: 24px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    color: rgba(255,255,255,0.7);
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent);
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    font-size: 0.875rem;
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav-btn-desktop {
+    display: inline-flex;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-search {
+      grid-template-columns: 1fr 1fr;
+    }
+    .hero-search .btn {
+      grid-column: 1 / -1;
+    }
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .review-card {
+      flex: 0 0 350px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .mobile-toggle {
+      display: block;
+    }
+    .nav-btn-desktop {
+      display: none;
+    }
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100vh;
+      background: var(--white);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      z-index: 1001;
+      gap: 40px;
+    }
+    .nav-links.active {
+      right: 0;
+    }
+    .nav-links a {
+      color: var(--text-dark);
+      font-size: 1.5rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    .nav-links .btn {
+      color: var(--white);
+      font-size: 1.125rem;
+      margin-top: 20px;
+    }
+
+    .section {
+      padding: 60px 5%;
+    }
+    .form-section {
+      padding: 60px 5%;
+    }
+    .hero-search {
+      grid-template-columns: 1fr;
+      padding: 20px;
+    }
+    .lead-grid {
+      grid-template-columns: 1fr;
+    }
+    .lead-form-wrapper {
+      padding: 40px 20px;
+    }
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .deal-card {
+      flex: 0 0 280px;
+    }
+    .review-card {
+      flex: 0 0 280px;
+      padding: 30px 20px;
+    }
+    .dest-card {
+      height: 300px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="#" class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+      SkyTravel
+    </a>
+    
+    <div class="nav-menu-wrapper">
+      <div class="nav-links" id="nav-links">
+        <a href="#destinations" class="nav-item">Направления</a>
+        <a href="#hot-deals" class="nav-item">Горящие туры</a>
+        <a href="#advantages" class="nav-item">Преимущества</a>
+        <a href="#reviews" class="nav-item">Отзывы</a>
+        <a href="#book" class="btn btn-primary nav-item" style="display: none;" id="mobile-nav-btn">Подобрать тур</a>
+      </div>
+      <a href="#book" class="btn btn-primary nav-btn-desktop" style="padding: 12px 24px;">Подобрать тур</a>
+      <button class="mobile-toggle" id="mobile-toggle">
+        <svg id="menu-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&q=80" alt="Beautiful Beach" class="hero-bg" id="hero-bg">
+    <div class="hero-overlay"></div>
+    <div class="hero-content fade-up">
+      <h1>Путешествия, которые начинаются сегодня</h1>
+      <p>Туры по миру • Лучшие цены • Горящие предложения каждый день</p>
+      
+      <div class="hero-search">
+        <div class="search-group">
+          <label>Куда хотите поехать?</label>
+          <input type="text" placeholder="Страна, город, курорт">
+        </div>
+        <div class="search-group">
+          <label>Даты поездки</label>
+          <input type="date">
+        </div>
+        <div class="search-group">
+          <label>Бюджет</label>
+          <select>
+            <option>Любой</option>
+            <option>До 500 000 ₸</option>
+            <option>500 000 - 1 000 000 ₸</option>
+            <option>От 1 000 000 ₸</option>
+          </select>
+        </div>
+        <button class="btn btn-primary">Найти тур</button>
+      </div>
+    </div>
+  </header>
+
+  <section id="destinations" class="section">
+    <div class="section-header fade-up">
+      <h2>Популярные направления</h2>
+      <p>Выберите идеальное место для вашего следующего отпуска</p>
+    </div>
+    <div class="dest-grid">
+      <a href="#" class="dest-card fade-up">
+        <img src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80" alt="Turkey" class="dest-img">
+        <div class="dest-info">
+          <h3>Турция</h3>
+          <span class="dest-price">от 250 000 ₸</span>
+        </div>
+      </a>
+      <a href="#" class="dest-card fade-up" style="transition-delay: 0.1s;">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80" alt="Dubai" class="dest-img">
+        <div class="dest-info">
+          <h3>ОАЭ, Дубай</h3>
+          <span class="dest-price">от 320 000 ₸</span>
+        </div>
+      </a>
+      <a href="#" class="dest-card fade-up" style="transition-delay: 0.2s;">
+        <img src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80" alt="Thailand" class="dest-img">
+        <div class="dest-info">
+          <h3>Таиланд</h3>
+          <span class="dest-price">от 400 000 ₸</span>
+        </div>
+      </a>
+      <a href="#" class="dest-card fade-up" style="transition-delay: 0.3s;">
+        <img src="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&q=80" alt="Maldives" class="dest-img">
+        <div class="dest-info">
+          <h3>Мальдивы</h3>
+          <span class="dest-price">от 800 000 ₸</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section id="hot-deals" class="section" style="background: var(--white);">
+    <div class="section-header fade-up">
+      <h2>Горящие туры</h2>
+      <p>Успейте забронировать по лучшей цене</p>
+    </div>
+    <div class="deals-scroll fade-up">
+      <div class="deal-card">
+        <div class="deal-img-wrapper">
+          <span class="deal-badge">-30%</span>
+          <img src="https://images.unsplash.com/photo-1580854483737-142f36f663f7?auto=format&fit=crop&q=80" alt="Hotel" class="deal-img">
+        </div>
+        <div class="deal-content">
+          <h3 class="deal-title">Rixos Premium Belek 5*</h3>
+          <div class="deal-meta">
+            <span>Турция, Белек</span>
+            <span>7 ночей • Все включено</span>
+          </div>
+          <div class="deal-prices">
+            <span class="price-new">540 000 ₸</span>
+            <span class="price-old">770 000 ₸</span>
+          </div>
+          <button class="btn btn-outline" style="color: var(--primary); border-color: var(--primary); width: 100%;">Забронировать</button>
+        </div>
+      </div>
+      <div class="deal-card">
+        <div class="deal-img-wrapper">
+          <span class="deal-badge">-25%</span>
+          <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80" alt="Hotel" class="deal-img">
+        </div>
+        <div class="deal-content">
+          <h3 class="deal-title">Atlantis The Palm 5*</h3>
+          <div class="deal-meta">
+            <span>ОАЭ, Дубай</span>
+            <span>5 ночей • Завтраки</span>
+          </div>
+          <div class="deal-prices">
+            <span class="price-new">890 000 ₸</span>
+            <span class="price-old">1 180 000 ₸</span>
+          </div>
+          <button class="btn btn-outline" style="color: var(--primary); border-color: var(--primary); width: 100%;">Забронировать</button>
+        </div>
+      </div>
+      <div class="deal-card">
+        <div class="deal-img-wrapper">
+          <span class="deal-badge">-40%</span>
+          <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&q=80" alt="Hotel" class="deal-img">
+        </div>
+        <div class="deal-content">
+          <h3 class="deal-title">Savoy Sharm El Sheikh 5*</h3>
+          <div class="deal-meta">
+            <span>Египет, Шарм</span>
+            <span>10 ночей • Ультра все включено</span>
+          </div>
+          <div class="deal-prices">
+            <span class="price-new">380 000 ₸</span>
+            <span class="price-old">630 000 ₸</span>
+          </div>
+          <button class="btn btn-outline" style="color: var(--primary); border-color: var(--primary); width: 100%;">Забронировать</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="advantages" class="section">
+    <div class="section-header fade-up">
+      <h2>Почему выбирают нас</h2>
+      <p>Делаем ваш отдых безупречным с первого клика</p>
+    </div>
+    <div class="adv-grid">
+      <div class="adv-card fade-up">
+        <div class="adv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <h3>Безопасная оплата</h3>
+        <p style="color: var(--text-muted); margin-top: 12px; font-size: 0.875rem;">Гарантируем надежность переводов и защиту ваших данных при бронировании.</p>
+      </div>
+      <div class="adv-card fade-up" style="transition-delay: 0.1s;">
+        <div class="adv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </div>
+        <h3>Поддержка 24/7</h3>
+        <p style="color: var(--text-muted); margin-top: 12px; font-size: 0.875rem;">Наши менеджеры на связи в любое время суток, пока вы находитесь в туре.</p>
+      </div>
+      <div class="adv-card fade-up" style="transition-delay: 0.2s;">
+        <div class="adv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        </div>
+        <h3>Проверенные отели</h3>
+        <p style="color: var(--text-muted); margin-top: 12px; font-size: 0.875rem;">Предлагаем только те варианты размещения, в качестве которых уверены на 100%.</p>
+      </div>
+      <div class="adv-card fade-up" style="transition-delay: 0.3s;">
+        <div class="adv-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        </div>
+        <h3>Лучшие цены</h3>
+        <p style="color: var(--text-muted); margin-top: 12px; font-size: 0.875rem;">Работаем напрямую с ведущими операторами, чтобы дать вам минимальную стоимость.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="book" class="form-section">
+    <div class="lead-form-wrapper fade-up">
+      <div class="lead-form-header">
+        <h2>Не нашли подходящий тур?</h2>
+        <p>Оставьте заявку, и мы соберем идеальное путешествие под ваши пожелания</p>
+      </div>
+      <form>
+        <div class="lead-grid">
+          <div class="search-group">
+            <label>Имя</label>
+            <input type="text" placeholder="Ваше имя" required>
+          </div>
+          <div class="search-group">
+            <label>Телефон</label>
+            <input type="tel" placeholder="+7 (___) ___-__-__" required>
+          </div>
+          <div class="search-group">
+            <label>Направление</label>
+            <input type="text" placeholder="Куда летим?">
+          </div>
+          <div class="search-group">
+            <label>Количество человек</label>
+            <select>
+              <option>1 взрослый</option>
+              <option>2 взрослых</option>
+              <option>2 взрослых + 1 ребенок</option>
+              <option>Большая компания</option>
+            </select>
+          </div>
+          <div class="search-group full">
+            <label>Дополнительные пожелания</label>
+            <input type="text" placeholder="Отель 5*, первая линия, экскурсии...">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-accent">Подобрать тур</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="reviews" class="section">
+    <div class="section-header fade-up">
+      <h2>Отзывы путешественников</h2>
+      <p>Реальные истории наших клиентов</p>
+    </div>
+    <div class="reviews-carousel fade-up">
+      <div class="review-card">
+        <div class="review-header">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80" alt="User" class="reviewer-img">
+          <div>
+            <h4 style="font-family: 'Inter', sans-serif;">Анна Смирнова</h4>
+            <span style="font-size: 0.875rem; color: var(--text-muted);">Тур в Дубай</span>
+          </div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Огромное спасибо за организацию отдыха! Отель превзошел все ожидания, перелет был комфортным. Очень удобно, что все документы прислали заранее на почту."</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" alt="User" class="reviewer-img">
+          <div>
+            <h4 style="font-family: 'Inter', sans-serif;">Максим И.</h4>
+            <span style="font-size: 0.875rem; color: var(--text-muted);">Тур на Мальдивы</span>
+          </div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Идеальное свадебное путешествие. Менеджер учел все наши пожелания и нашел виллу на воде в рамках нашего бюджета. Обязательно обратимся снова!"</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80" alt="User" class="reviewer-img">
+          <div>
+            <h4 style="font-family: 'Inter', sans-serif;">Елена В.</h4>
+            <span style="font-size: 0.875rem; color: var(--text-muted);">Тур в Турцию</span>
+          </div>
+        </div>
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Отличный семейный отдых. Посоветовали отель с шикарной детской анимацией, дети были в восторге. Цена оказалась ниже, чем если бы бронировали сами."</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a href="#" class="logo" style="margin-bottom: 24px; display: inline-flex;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+          SkyTravel
+        </a>
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.875rem;">Ваш надежный проводник в мир путешествий. Создаем незабываемые впечатления с 2015 года.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Компания</h4>
+        <div class="footer-links">
+          <a href="#">О нас</a>
+          <a href="#">Контакты</a>
+          <a href="#">Вакансии</a>
+          <a href="#">Блог</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Клиентам</h4>
+        <div class="footer-links">
+          <a href="#">Поиск тура</a>
+          <a href="#">Горящие туры</a>
+          <a href="#">Страхование</a>
+          <a href="#">Оплата</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Контакты</h4>
+        <div class="footer-links">
+          <a href="tel:+77770000000">+7 (777) 000-00-00</a>
+          <a href="mailto:hello@skytravel.kz">hello@skytravel.kz</a>
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.875rem; margin-top: 8px;">Алматы, пр. Абая, 15</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 SkyTravel. Все права защищены.
+    </div>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    const heroBg = document.getElementById('hero-bg');
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const navLinks = document.getElementById('nav-links');
+    const menuIcon = document.getElementById('menu-icon');
+    const navItems = document.querySelectorAll('.nav-item');
+    const mobileNavBtn = document.getElementById('mobile-nav-btn');
+
+    if (window.innerWidth <= 768) {
+      mobileNavBtn.style.display = 'inline-flex';
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        mobileNavBtn.style.display = 'inline-flex';
+      } else {
+        mobileNavBtn.style.display = 'none';
+        navLinks.classList.remove('active');
+        document.body.classList.remove('menu-open');
+        navbar.classList.remove('menu-open-nav');
+        menuIcon.innerHTML = '<line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>';
+      }
+    });
+
+    mobileToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      document.body.classList.toggle('menu-open');
+      navbar.classList.toggle('menu-open-nav');
+      
+      if (navLinks.classList.contains('active')) {
+        menuIcon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+      } else {
+        menuIcon.innerHTML = '<line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>';
+      }
+    });
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          navLinks.classList.remove('active');
+          document.body.classList.remove('menu-open');
+          navbar.classList.remove('menu-open-nav');
+          menuIcon.innerHTML = '<line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>';
+        }
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+
+      const scrollY = window.scrollY;
+      heroBg.style.transform = `translateY(${scrollY * 0.4}px)`;
+    });
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-up').forEach(section => {
+      observer.observe(section);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Фитнес-клуб | Сильнее каждый день</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-main: #111318;
+    --bg-surface: #1C2129;
+    --text-main: #E6E6E6;
+    --text-sec: #9AA4B2;
+    --accent: #3B82F6;
+    --accent-hover: #2563EB;
+    --border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .logo-text {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .btn {
+    display: inline-block;
+    background-color: var(--accent);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    padding: 16px 32px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 1px;
+  }
+
+  .btn:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--text-sec);
+    color: var(--text-main);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--bg-surface);
+    border-color: var(--text-main);
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s, padding 0.3s;
+  }
+
+  .navbar.scrolled {
+    background-color: rgba(17, 19, 24, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px 40px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .logo-text span {
+    color: var(--accent);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 30px;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-sec);
+    transition: color 0.3s;
+    text-transform: uppercase;
+  }
+
+  .nav-links a:hover, .nav-links a.active {
+    color: #fff;
+  }
+
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    transform: scale(1.05);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(17,19,24,0.7) 0%, rgba(17,19,24,0.95) 100%);
+    z-index: -1;
+  }
+
+  .hero-content {
+    max-width: 800px;
+    padding: 0 20px;
+    opacity: 0;
+    animation: fadeIn 1s 0.5s forwards;
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  .hero p {
+    font-size: 1.125rem;
+    color: var(--text-sec);
+    margin-bottom: 40px;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .section {
+    padding: 100px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .section-header h2 {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .section-header p {
+    color: var(--text-sec);
+  }
+
+  .grid-advantages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .adv-card {
+    background-color: var(--bg-surface);
+    padding: 40px 30px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .adv-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+  }
+
+  .adv-icon {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(59, 130, 246, 0.1);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+
+  .adv-card h3 {
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 15px;
+  }
+
+  .adv-card p {
+    color: var(--text-sec);
+    font-size: 0.95rem;
+  }
+
+  .grid-pricing {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    align-items: center;
+  }
+
+  .price-card {
+    background-color: var(--bg-surface);
+    padding: 50px 40px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+  }
+
+  .price-card.recommended {
+    border-color: var(--accent);
+    transform: scale(1.05);
+    background: linear-gradient(to bottom, var(--bg-surface), #1a2233);
+    position: relative;
+  }
+
+  .rec-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--accent);
+    color: #fff;
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .price-card h3 {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .price {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    margin-bottom: 30px;
+  }
+
+  .price span {
+    font-size: 1rem;
+    color: var(--text-sec);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  .price-features {
+    text-align: left;
+    margin-bottom: 40px;
+  }
+
+  .price-features li {
+    margin-bottom: 15px;
+    color: var(--text-sec);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .price-features li::before {
+    content: "✓";
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  .price-card .btn {
+    width: 100%;
+  }
+
+  .grid-trainers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+  }
+
+  .trainer-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .trainer-img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .trainer-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 20px;
+    background: linear-gradient(to top, rgba(17,19,24,1) 0%, rgba(17,19,24,0) 100%);
+    transform: translateY(20px);
+    transition: transform 0.3s;
+  }
+
+  .trainer-card:hover .trainer-img {
+    transform: scale(1.05);
+  }
+
+  .trainer-card:hover .trainer-info {
+    transform: translateY(0);
+  }
+
+  .trainer-info h3 {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+
+  .trainer-info p {
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .schedule-container {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+  }
+
+  .schedule-table th, .schedule-table td {
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+  }
+
+  .schedule-table th {
+    font-family: 'Oswald', sans-serif;
+    color: #fff;
+    text-transform: uppercase;
+    background-color: rgba(255,255,255,0.02);
+  }
+
+  .class-item {
+    background-color: rgba(59, 130, 246, 0.05);
+    padding: 10px;
+    margin: 5px 0;
+    transition: background-color 0.3s;
+  }
+
+  .class-item:hover {
+    background-color: rgba(59, 130, 246, 0.15);
+  }
+
+  .class-name {
+    display: block;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+  }
+
+  .class-time {
+    display: block;
+    color: var(--text-sec);
+    font-size: 0.8rem;
+  }
+
+  .cta-section {
+    background-color: var(--bg-surface);
+    text-align: center;
+    padding: 100px 20px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .cta-section h2 {
+    font-size: 3rem;
+    color: #fff;
+    margin-bottom: 30px;
+  }
+
+  footer {
+    padding: 60px 40px;
+    text-align: center;
+    color: var(--text-sec);
+  }
+
+  footer .logo-text {
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .fade-in-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .fade-in-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .nav-links {
+      display: none;
+    }
+    .price-card.recommended {
+      transform: scale(1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-btns {
+      flex-direction: column;
+    }
+    .section {
+      padding: 60px 20px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <a href="#" class="logo-text">Iron<span>Core</span></a>
+    <div class="nav-links">
+      <a href="#about">О клубе</a>
+      <a href="#advantages">Преимущества</a>
+      <a href="#pricing">Тарифы</a>
+      <a href="#trainers">Тренеры</a>
+      <a href="#schedule">Расписание</a>
+    </div>
+    <a href="#pricing" class="btn" style="padding: 10px 20px; font-size: 12px;">Присоединиться</a>
+  </nav>
+
+  <header class="hero">
+    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80" alt="Gym background" class="hero-bg" id="heroBg">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Тренируйся.<br>Прогрессируй. Побеждай.</h1>
+      <p>Современный зал, профессиональные тренеры и программы под любые цели.</p>
+      <div class="hero-btns">
+        <a href="#pricing" class="btn">Записаться на тренировку</a>
+        <a href="#advantages" class="btn btn-outline">Узнать больше</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="advantages" class="section fade-in-section">
+    <div class="section-header">
+      <h2>Почему мы</h2>
+      <p>Пространство, созданное для достижения ваших результатов</p>
+    </div>
+    <div class="grid-advantages">
+      <div class="adv-card">
+        <div class="adv-icon">⚙️</div>
+        <h3>Современное оборудование</h3>
+        <p>Премиальные тренажеры последних поколений для изоляции и базовых упражнений.</p>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">⬛</div>
+        <h3>Просторные зоны</h3>
+        <p>Зонирование для кроссфита, кардио и тяжелой атлетики без очередей.</p>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">👤</div>
+        <h3>Персональные программы</h3>
+        <p>Индивидуальный подход к тренировкам и питанию под ваши цели.</p>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">🚿</div>
+        <h3>Комфортная инфраструктура</h3>
+        <p>Чистые раздевалки, сауна и фитнес-бар для восстановления.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="section fade-in-section">
+    <div class="section-header">
+      <h2>Абонементы</h2>
+      <p>Выберите формат, который подходит именно вам</p>
+    </div>
+    <div class="grid-pricing">
+      <div class="price-card">
+        <h3>Basic</h3>
+        <div class="price">25000 ₸<span>/мес</span></div>
+        <ul class="price-features">
+          <li>Безлимитный тренажерный зал</li>
+          <li>Кардио-зона</li>
+          <li>Раздевалка и душ</li>
+          <li>Вводный инструктаж</li>
+        </ul>
+        <button class="btn btn-outline">Выбрать</button>
+      </div>
+      <div class="price-card recommended">
+        <div class="rec-badge">Популярный</div>
+        <h3>Standard</h3>
+        <div class="price">35000 ₸<span>/мес</span></div>
+        <ul class="price-features">
+          <li>Все из Basic</li>
+          <li>Групповые занятия</li>
+          <li>Сауна и зона отдыха</li>
+          <li>1 персональная тренировка</li>
+          <li>Заморозка на 14 дней</li>
+        </ul>
+        <button class="btn">Выбрать</button>
+      </div>
+      <div class="price-card">
+        <h3>Pro</h3>
+        <div class="price">55000 ₸<span>/мес</span></div>
+        <ul class="price-features">
+          <li>Все из Standard</li>
+          <li>4 персональные тренировки</li>
+          <li>Консультация нутрициолога</li>
+          <li>Безлимитная заморозка</li>
+          <li>Скидка 20% в фитнес-баре</li>
+        </ul>
+        <button class="btn btn-outline">Выбрать</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="trainers" class="section fade-in-section">
+    <div class="section-header">
+      <h2>Наша команда</h2>
+      <p>Профессионалы, которые приведут вас к результату</p>
+    </div>
+    <div class="grid-trainers">
+      <div class="trainer-card">
+        <img src="https://images.unsplash.com/photo-1583465551910-fe36dbf59e0a?auto=format&fit=crop&q=80" alt="Trainer" class="trainer-img">
+        <div class="trainer-info">
+          <h3>Александр</h3>
+          <p>Силовые тренировки</p>
+        </div>
+      </div>
+      <div class="trainer-card">
+        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80" alt="Trainer" class="trainer-img">
+        <div class="trainer-info">
+          <h3>Елена</h3>
+          <p>Функциональный тренинг</p>
+        </div>
+      </div>
+      <div class="trainer-card">
+        <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80" alt="Trainer" class="trainer-img">
+        <div class="trainer-info">
+          <h3>Михаил</h3>
+          <p>Кроссфит</p>
+        </div>
+      </div>
+      <div class="trainer-card">
+        <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80" alt="Trainer" class="trainer-img">
+        <div class="trainer-info">
+          <h3>Анна</h3>
+          <p>Йога и стретчинг</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="schedule" class="section fade-in-section">
+    <div class="section-header">
+      <h2>Расписание</h2>
+      <p>Групповые программы на текущую неделю</p>
+    </div>
+    <div class="schedule-container">
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th>Время</th>
+            <th>Понедельник</th>
+            <th>Среда</th>
+            <th>Пятница</th>
+            <th>Суббота</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>09:00</td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">Йога</span>
+                <span class="class-time">Анна</span>
+              </div>
+            </td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">Пилатес</span>
+                <span class="class-time">Анна</span>
+              </div>
+            </td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">Йога</span>
+                <span class="class-time">Анна</span>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>18:00</td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">CrossFit</span>
+                <span class="class-time">Михаил</span>
+              </div>
+            </td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">Functional</span>
+                <span class="class-time">Елена</span>
+              </div>
+            </td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">CrossFit</span>
+                <span class="class-time">Михаил</span>
+              </div>
+            </td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">Stretching</span>
+                <span class="class-time">Анна</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>19:30</td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">Power Lift</span>
+                <span class="class-time">Александр</span>
+              </div>
+            </td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">TRX</span>
+                <span class="class-time">Елена</span>
+              </div>
+            </td>
+            <td>
+              <div class="class-item">
+                <span class="class-name">Power Lift</span>
+                <span class="class-time">Александр</span>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="cta-section fade-in-section">
+    <h2>Начни тренироваться уже сегодня</h2>
+    <a href="#pricing" class="btn">Записаться сейчас</a>
+  </section>
+
+  <footer>
+    <a href="#" class="logo-text">Iron<span>Core</span></a>
+    <p>&copy; 2026 Фитнес-клуб премиум класса. Все права защищены.</p>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    const heroBg = document.getElementById('heroBg');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      
+      const scrollY = window.scrollY;
+      heroBg.style.transform = `scale(1.05) translateY(${scrollY * 0.2}px)`;
+    });
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in-section').forEach(section => {
+      observer.observe(section);
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
